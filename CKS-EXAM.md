@@ -1,4 +1,4 @@
-Domains & Competencies
+# Domains & Competencies
 
 <table style="width:100%; table-layout:fixed;">
   <tr>
@@ -33,19 +33,19 @@ Domains & Competencies
     <th style="width:30%;">15%</th>
   </tr>
   <tr>
-    <td>Use Role Based Access Controls to minimize exposure</td>
+    <td style="width:70%">Use Role Based Access Controls to minimize exposure</td>
     <td></td>
   </tr>
   <tr>
-    <td>Exercise caution in using service accounts e.g. disable defaults, minimize permissions on newly created ones</td>
+    <td style="width:70%">Exercise caution in using service accounts e.g. disable defaults, minimize permissions on newly created ones</td>
     <td></td>
   </tr>
   <tr>
-    <td>Restrict access to Kubernetes API</td>
+    <td style="width:70%">Restrict access to Kubernetes API</td>
     <td></td>
   </tr>
   <tr>
-    <td>Upgrade Kubernetes to avoid vulnerabilities</td>
+    <td style="width:70%">Upgrade Kubernetes to avoid vulnerabilities</td>
     <td></td>
   </tr>
 </table>
