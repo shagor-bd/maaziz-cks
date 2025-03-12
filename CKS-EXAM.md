@@ -1,8 +1,5 @@
 # CKS Exam Domains & Competencies
 
-Domains & Competencies
-
-
 | Cluster Setup | 15% |
 |---------------|-----|
 | Use Network security policies to restrict cluster level access
