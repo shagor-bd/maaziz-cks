@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: app1-allow-data001
+  namespace: app
+  annotations:
+    description: "Allow app1 from app namespace to connect data-001 from data namespace"
+spec:
+  podSelector:
+    matchLabels:
+      id: app
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: data
+      podSelector:      # If we put - before podSelector it will OR logic, now its AND logic
+        matchLabels:
+          id: data
+    ports:
+      - protocol: TCP
+        port: 80 
+        

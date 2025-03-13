@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-allow-dns-coredns
+  namespace: app
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  egress:
+  - to:
+      - namespaceSelector: {}
+        podSelector:
+          matchLabels:
+            k8s-app: kube-dns          
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53      
+      

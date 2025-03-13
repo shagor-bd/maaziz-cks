@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: data001-allow-app1
+  namespace: data
+  annotations:
+    description: "allow-ns_data-pod_data_1.yaml policy is not enough for Allow app1 from app namespace to connect data-001 from data namespace we must create the ingress also from data ns data-001 pod to app ns app1 pod"
+spec:
+  podSelector:
+    matchLabels:
+      id: data
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: app
+      podSelector:      # If we put '-' before podSelector it will OR logic, now its AND logic
+        matchLabels:
+          id: app
+    ports:
+      - protocol: TCP
+        port: 80
+

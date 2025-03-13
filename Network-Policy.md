@@ -12,3 +12,35 @@ Cert Manager | https://medium.com/@muppedaanvesh/%EF%B8%8F-kubernetes-ingress-se
 
 
 https://www.civo.com/learn/network-policies-kubernetes
+
+### Delete list of pods, network policy only.
+k delete networkpolicies $(kubectl get networkpolicies -n app --no-headers | awk '{print $1}') -n app
+
+```plaintext
+
++---------------------------------------------------+
+|                   Namespace: app                  |
+| Labels: name=app                                  |
+|                                                   |
+| +------------------+       +-------------------+  |
+| | Pod: app1        |       | NetworkPolicy     |  |
+| | Labels: id=app   |       | - deny-all        |  |
+| +------------------+       +-------------------+  |
+|         |                                         |
+|         | Egress Allowed                          |
+|         v                                         |
++---------------------------------------------------+
+                          |
+                          | Traffic Allowed by NetworkPolicy
+                          |
++---------------------------------------------------+
+|                   Namespace: data                 |
+| Labels: name=data                                 |
+|                                                   |
+| +-----------------+       +-------------------+   |
+| | Pod: data-001   |       | NetworkPolicy     |   |
+| | Labels: id=data |       | - allow-app1      |   |
+| +-----------------+       +-------------------+   |
++---------------------------------------------------+
+
+```
