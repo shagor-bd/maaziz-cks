@@ -1,19 +1,16 @@
+# With this rules none of the pods are able to connect any pod inside myapp namespace. But only allow DNS request.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all-allow-dns-coredns
-  namespace: app
+  name: deny-all-allow-dns
+  namespace: myapp
 spec:
+  podSelector: {}
   policyTypes:
   - Ingress
   - Egress
   egress:
-  - to:
-      - namespaceSelector: {}
-        podSelector:
-          matchLabels:
-            k8s-app: kube-dns          
-    ports:
+  - ports:
     - protocol: TCP
       port: 53
     - protocol: UDP

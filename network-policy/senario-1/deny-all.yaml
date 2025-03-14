@@ -4,6 +4,7 @@ metadata:
   name: deny-all-app-namespace
   namespace: app
 spec:
+  podSelector: {}
   policyTypes:
   - Ingress
   - Egress

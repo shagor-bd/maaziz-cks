@@ -14,10 +14,12 @@ Cert Manager | https://medium.com/@muppedaanvesh/%EF%B8%8F-kubernetes-ingress-se
 https://www.civo.com/learn/network-policies-kubernetes
 
 ### Delete list of pods, network policy only.
-k delete networkpolicies $(kubectl get networkpolicies -n app --no-headers | awk '{print $1}') -n app
+```bash
+kubectl delete networkpolicies $(kubectl get networkpolicies -n app --no-headers | awk '{print $1}') -n app
+```
 
+## Senario 1
 ```plaintext
-
 +---------------------------------------------------+
 |                   Namespace: app                  |
 | Labels: name=app                                  |
@@ -43,4 +45,25 @@ k delete networkpolicies $(kubectl get networkpolicies -n app --no-headers | awk
 | +-----------------+       +-------------------+   |
 +---------------------------------------------------+
 
+```
+## Senario 2
+
+```plaintext
++-------------------+       +-------------------+       +-------------------+
+|   Frontend Pod    | ----> |    Backend Pod    | ----> |   Database Pod    |
+|  (app=frontend)   |       |   (app=backend)   |       |  (app=database)   |
+|                   |       |                   |       |                   |
+|  - IP: 10.1.1.1   |       |  - IP: 10.1.1.2   |       |  - IP: 10.1.1.3   |
+|  - Port: 80       |       |  - Port: 8080     |       |  - Port: 3306     |
++-------------------+       +-------------------+       +-------------------+
+         |                           |                           |
+         |                           |                           |
+         |                           |                           |
+         v                           v                           v
++-------------------+       +-------------------+       +-------------------+
+|  Network Policy   |       |  Network Policy   |       |  Network Policy   |
+|  Allow Frontend   |       |  Allow Backend    |       |  Deny All Traffic |
+|  to Backend       |       |  to Database      |       |  But only allow   |
+|                   |       |                   |       |  Backend          |
++-------------------+       +-------------------+       +-------------------+
 ```
