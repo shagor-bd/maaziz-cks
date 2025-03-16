@@ -1,9 +1,9 @@
-# With this rules none of the pods are able to connect any pod inside myapp namespace. But only allow DNS request.
+# deny all incoming and outgoing traffic from all pods in namespace mydb
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all-allow-dns
-  namespace: myapp
+  name: mysqldb-deny
+  namespace: mydb
 spec:
   podSelector: {}
   policyTypes:
@@ -14,5 +14,4 @@ spec:
     - protocol: TCP
       port: 53
     - protocol: UDP
-      port: 53      
-      
+      port: 53

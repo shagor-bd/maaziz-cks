@@ -1,9 +1,0 @@
-kubectl -n myapp exec database-67c5bccd6c-hsb5d -- curl -s 10.105.63.127:8080 | tr -d '\n'
-                                                   wget --spider --timeout=1 nginx
-
-## Get Service and POD network CIRD
-
-➜  kubectl cluster-info dump | grep -m 1 service-cluster-ip-range
-                            "--service-cluster-ip-range=10.96.0.0/12",
-➜  kubectl get node master -o jsonpath='{.spec.podCIDR}'
-192.168.0.0/24 

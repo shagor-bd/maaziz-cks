@@ -1,0 +1,29 @@
+#my-app-deployment and cache-deployment deployed, and my-app-deployment deployment exposed through a service named my-app-service . Create a NetworkPolicy named my-app-network-policy to restrict incoming and outgoing traffic to my-app-deployment pods with the following specifications:
+
+# - Allow incoming traffic only from pods.
+# - Allow incoming traffic from a specific pod with the label app=trusted
+# - Allow outgoing traffic to pods.
+# - Deny all other incoming and outgoing traffic.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: my-app-network-policy
+  namespace: default  # Replace with the appropriate namespace if different
+spec:
+  podSelector:
+    matchLabels:
+      app: my-app-deployment  # Replace with the label of your my-app-deployment pods
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}  # Allow incoming traffic from all pods
+    - from:
+        - podSelector:
+            matchLabels:
+              app: trusted  # Allow incoming traffic from the pod with label app=trusted
+  egress:
+    - to:
+        - podSelector: {}  # Allow outgoing traffic to all pods

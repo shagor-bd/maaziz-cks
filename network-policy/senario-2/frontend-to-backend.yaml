@@ -15,7 +15,7 @@ spec:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: myapp         # If we dont put the namespace selector other namespace can create pod with same labe can communicate.
-    - podSelector:
+      podSelector:
         matchLabels:
           app: backend
     ports:
@@ -39,7 +39,7 @@ spec:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: myapp         # If we dont put the namespace selector other namespace can create pod with same labe can communicate.
-    - podSelector:
+      podSelector:
         matchLabels:
           app: frontend
     ports:
