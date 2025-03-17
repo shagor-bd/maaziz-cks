@@ -1,4 +1,4 @@
-bash```
+```bash
 kubectl -n myapp exec database-67c5bccd6c-hsb5d -- curl -s 10.105.63.127:8080 | tr -d '\n'
                                                    wget --spider --timeout=1 nginx
 ```
@@ -14,7 +14,7 @@ kubectl -n myapp exec database-67c5bccd6c-hsb5d -- curl -s 10.105.63.127:8080 | 
 k -n default run nginx1 --image=nginx:1.21.5-alpine --restart=Never -i --rm  -- curl microservice1.app.svc.cluster.local
 ```
 
-## Some command for check nwtwork policy
+## Some command for check network policy
 ```bash
 # these should work
 k -n space1 exec app1-0 -- curl -m 1 microservice1.space2.svc.cluster.local

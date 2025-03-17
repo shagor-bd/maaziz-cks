@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: insecure-ingress
+  namespace: myapp
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx             # This is the ingress class name
+  rules:
+  - http:
+      paths:
+      - path: /frontend
+        pathType: Prefix
+        backend:
+          service: 
+            name: frontend-service
+            port:
+              number: 80
+
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service: 
+            name: backend-service
+            port:
+              number: 8080

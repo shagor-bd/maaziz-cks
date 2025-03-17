@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+  namespace: default
+spec:
+  # Selects pods with the label "name: internal" in the default namespace
+  podSelector:
+    matchLabels:
+      name: internal
+
+  # Specifies that this policy applies to both ingress (incoming) and egress (outgoing) traffic
+  policyTypes:
+  - Egress
+  - Ingress
+
+  # Ingress rules: Defines what incoming traffic is allowed
+  ingress:
+    - {}  # Allows all incoming traffic to the selected pods
+
+  # Egress rules: Defines what outgoing traffic is allowed
+  egress:
+    # Allows traffic to pods with the label "name: mysql" on TCP port 3306
+    - to:
+        - podSelector:
+            matchLabels:
+              name: mysql
+      ports:
+        - protocol: TCP
+          port: 3306
+
+    # Allows traffic to pods with the label "name: payroll" on TCP port 8080
+    - to:
+        - podSelector:
+            matchLabels:
+              name: payroll
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Allows DNS traffic (UDP and TCP) on port 53
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
