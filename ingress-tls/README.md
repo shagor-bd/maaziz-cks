@@ -175,7 +175,7 @@ spec:
   tls:
   - hosts:
       - cksexam.com
-    secretName: tls-secret   # TLS Secret we create with crt and key file 
+    secretName: tls-secret   # TLS Secret we created with crt and key file 
   rules:
   - host: cksexam.com
     http:
@@ -198,11 +198,16 @@ spec:
 
 ### For test the secure connectivity
 ```bash
+curl https://cksexam.com:32025/frontend 
+# This will not work because we dont have DNS record entry and for temporary name resolution we can use below command
+
 curl https://cksexam.com:32025/frontend --resolve cksexam.com:32025:192.168.0.112 -kv
 
 # Or
 
 curl -H "Host: cksexam.com" https://192.168.0.112:32025/frontend -v
+
+# Also check with /backend
 ```
 
 
