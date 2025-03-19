@@ -13,8 +13,6 @@ Cert Manager | https://medium.com/@muppedaanvesh/%EF%B8%8F-kubernetes-ingress-se
 
 https://www.civo.com/learn/network-policies-kubernetes
 
-ImageWebhookPolicy | https://github.com/howto-kubernetes-info/imagepolicywebhook
-
 
 ### Delete list of pods, network policy only.
 ```bash
