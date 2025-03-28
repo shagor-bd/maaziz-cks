@@ -1,105 +1,69 @@
-# `kubectl proxy`
+# Kubernetes Dashboard
 
-`kubectl proxy` is a command used to create a local proxy to the Kubernetes API server. This allows you to interact with the Kubernetes API directly from your local machine without requiring authentication for each request.
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 
-### **Basic Usage**
-```sh
-kubectl proxy
+Go to this link for installation | `https://github.com/kubernetes/dashboard`
+
+Here we will use `helm`. Please follow this link to [Install helm](https://helm.sh/docs/intro/install/)
+
+Install Kubernetes Dashboard please run:
+
+```bash
+# Add kubernetes-dashboard repository
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
 ```
-This starts a proxy server on `http://127.0.0.1:8001/` by default, forwarding requests to the Kubernetes API server.
+Output
 
-### **Use Cases**
-1. **Accessing the Kubernetes API locally**  
-   With `kubectl proxy` running, you can interact with the API using tools like `curl` or directly in a browser.
-   ```sh
-   curl http://127.0.0.1:8001/api/v1/nodes
-   ```
-   This fetches details of all nodes in the cluster.
+```plaintext
+Release "kubernetes-dashboard" does not exist. Installing it now.
+NAME: kubernetes-dashboard
+LAST DEPLOYED: Wed Mar 19 16:17:41 2025
+NAMESPACE: kubernetes-dashboard
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+*************************************************************************************************
+*** PLEASE BE PATIENT: Kubernetes Dashboard may need a few minutes to get up and become ready ***
+*************************************************************************************************
 
-2. **Accessing Kubernetes Dashboard**  
-   If the Kubernetes Dashboard is deployed, you can access it via:
-   ```sh
-   http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
-   ```
+Congratulations! You have just installed Kubernetes Dashboard in your cluster.
 
-3. **Interacting with Resources Without Authentication**  
-   Since the proxy uses your existing `kubectl` credentials, it removes the need to manually provide authentication headers.
+To access Dashboard run:
+  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
 
-### **Advanced Options**
-- **Specify a different port**  
-  ```sh
-  kubectl proxy --port=9000
-  ```
-- **Allow access from other hosts** (bind to all interfaces)  
-  ```sh
-  kubectl proxy --address=0.0.0.0 --accept-hosts='.*'
-  ```
-- **Enable API filtering for security**  
-  ```sh
-  kubectl proxy --disable-filter=false
-  ```
+NOTE: In case port-forward command does not work, make sure that kong service name is correct.
+      Check the services in Kubernetes Dashboard namespace using:
+        kubectl -n kubernetes-dashboard get svc
 
-### **Stopping the Proxy**
-Simply press `Ctrl+C` in the terminal running `kubectl proxy` to stop it.
+Dashboard will be available at:
+  https://localhost:8443
 
-
-
-# `kubectl port-forword` 
-
-`kubectl port-forward` is a command used to forward a port from a local machine to a pod, service, or deployment inside a Kubernetes cluster. This is useful for accessing applications running inside the cluster without exposing them via a service or ingress.
-
----
-
-## **Basic Syntax**
-```sh
-kubectl port-forward <resource-type>/<resource-name> <local-port>:<remote-port>
+$ kubectl -n kubernetes-dashboard get svc
+NAME                                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+kubernetes-dashboard-api               ClusterIP   10.110.8.82      <none>        8000/TCP   89s
+kubernetes-dashboard-auth              ClusterIP   10.101.102.162   <none>        8000/TCP   89s
+kubernetes-dashboard-kong-proxy        ClusterIP   10.102.154.182   <none>        443/TCP    89s
+kubernetes-dashboard-metrics-scraper   ClusterIP   10.101.89.109    <none>        8000/TCP   89s
+kubernetes-dashboard-web               ClusterIP   10.110.223.234   <none>        8000/TCP   89s
 ```
-- `<resource-type>`: Can be `pod`, `service`, or `deployment`
-- `<resource-name>`: The name of the pod, service, or deployment
-- `<local-port>`: The port on your local machine
-- `<remote-port>`: The port in the container (inside the pod)
 
----
 
-## **Examples**
 
-### **1. Forward a Port from a Pod**
-If you have a pod named `my-pod` running an application on port `8080`, forward it to your local machine’s port `9090`:
-```sh
-kubectl port-forward pod/my-pod 9090:8080
-```
-Now, you can access the application at `http://localhost:9090`.
 
----
 
-### **2. Forward a Port from a Service**
-If a service named `my-service` exposes port `80`, you can forward it to your local machine’s port `8080`:
-```sh
-kubectl port-forward service/my-service 8080:80
-```
-This allows you to access the service as if it were running locally.
 
----
 
-### **3. Forward a Port from a Deployment**
-To forward a port from a deployment named `my-deployment`:
-```sh
-kubectl port-forward deployment/my-deployment 5000:5000
-```
-This will forward traffic to one of the pods in the deployment.
 
----
 
-## **Use Cases**
-- Debugging applications running inside Kubernetes without exposing them.
-- Accessing internal services (like databases) securely.
-- Testing API endpoints of a running application.
 
----
 
-## **Stopping Port Forwarding**
-Simply press `Ctrl+C` in the terminal to stop forwarding.
 
-# Expose K8S Dashboard with Ingress Controller
+## Links:
 
-We can expose both secure and insecure way k8s Dashboard. Check the ingress for more.
+[Upgrade K8S Dashboard](https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard) 
+
+[Dashboard Arguments](https://github.com/kubernetes/dashboard/blob/master/docs/common/arguments.md)
+

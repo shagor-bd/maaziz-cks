@@ -1,0 +1,244 @@
+ontrolplane ~ ➜  kubectl config voew
+error: unknown command "voew"
+See 'kubectl config -h' for help and examples
+
+controlplane ~ ✖ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://controlplane:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: DATA+OMITTED
+    client-key-data: DATA+OMITTED
+
+controlplane ~ ➜  kubectl config view --raw
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWE9QZW5tN3IzSW93RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBek1qTXdPRFEzTkRSYUZ3MHpOVEF6TWpFd09EVXlORFJhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURFbE9ZNFF0QmtiT3VpYWRMSGEyWmtYUGo2OUpCTlpPMWEwbWZwMGRybUdZc0FweUpjUThBMFBrQ2oKNHk0dG53dzZYMzVSRkE3OHE0cUFVcmRhNzFTdUJ4YVdrQStnK2VqdDVNeVI1bk1nNStUcmVFdkE4aWx5VXBVYwoyYXQwaSswYW9EREhTb3lNWm9CSUtlSTljUGVkVjAwODY0TDFrMUJxS3Y5VTQyVkk4ZDNaVm10MklYMzZEZVNmCkMvb01waXNPNXVVTlMrVHlXbjFzMFoxYzRxbDlkSXV1U3NuNGZSR1d3TEhWWUozREFudTRURHlXY1c5WkdQeEsKZEFGQkdOeTJab21kUXNpcEs3MXZzR2tGbG9tTEMydko1RjI1Z1hSYllFZUpGbHc0Q3VJYm5JbzZWWTNnQXlKSAordTVHQ0NlVTJ5b3BoMzZaK2pwUlVlWjBxdHpoQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTSHJBa0FzSGhpamNJVVNwQzBYZjlYUVJzR1hqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQjlVNVhiaitjeQpFaWVLc0NGbG81UEZGQWhUTTNFVE1EMWRtUmxkazBzcld3ZzlVTUlhSDdEZ3JVOStRMWNrNVZLL2pGMGZTNnlLCm5IVVJteWpQVS9mQ0d6WWRtdk9Jc1lzRXFaVjdsSEJ4RGUvY3dXMnE1b1FsY0J6UmxGcHRRZ3BYS0xrRU5rVDEKZTNmL2ozZTdwdmJjTS8xQVd5bWRLZytyWEo5T2tlcllqMjVMRTVVUHdLMjZUQzBCSVA3clRsVTJDdGRjZ2IwUQpXWE4vN3BVSjkxQkdSK1VORFZ5RWhKTWV2M2hVWXQ5TWZsaTNtTkZYcGF2Ykd2NHZwMGROMytDVktLUnZrcGhpCmQxaE13SkdSZDVvWWp2Y1NXbDBNdHlORFVhd0hjcmVROWhOdzJ4eXk0amlWeUJSbWIwSE81VE01c3lZTTV1TGQKY0ZVbk52QTlURFdaCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://controlplane:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURLVENDQWhHZ0F3SUJBZ0lJWHZscmpZQ24yVVV3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBek1qTXdPRFEzTkRSYUZ3MHlOakF6TWpNd09EVXlORFJhTUR3eApIekFkQmdOVkJBb1RGbXQxWW1WaFpHMDZZMngxYzNSbGNpMWhaRzFwYm5NeEdUQVhCZ05WQkFNVEVHdDFZbVZ5CmJtVjBaWE10WVdSdGFXNHdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEVUw0cUsKbEorSWkxVSsyY0I1OVp6ckJ4MWcyUWxZWmttc0R3cEhCa3EwcytOWTBpdnFiUXJ2V2ZEbHF6SFB6KzVoRTdJWQp5bVpMRVI1WFZoZ2FQWVlLWDNNdURkT1Z1SFhwNWh2cHpvejkwTThLbm05VUZPRTk2WnFrdndQN2JucmpWTGFaCkp4MVg4OGVHa0JYRlhqWGNBUzhxSTlEcXBLNFNDa3pQWXczWm1wRUdwSkk1RVNqWjU1QWVCekZLbS9ldzh2Z2gKN2pKYkZNNnBraGZKMDZPQ3o3SFIrQXVBbmdSR3VKRGw4dDliR25oOGY2cnhuOU93T1JBbHc4bWFZRlBFTmZOagpXTUxsUnkrbnp1ZHI0RjlBc1ZrMTJPK2Q5SGtzM0ZsOXF1WHlyUkZOZXcxSHNIcXFLWi9kU0doQjYrbEwxL1ZJClZrTVE4eVRiNkp2OVdUbVRBZ01CQUFHalZqQlVNQTRHQTFVZER3RUIvd1FFQXdJRm9EQVRCZ05WSFNVRUREQUsKQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RUFqQUFNQjhHQTFVZEl3UVlNQmFBRkllc0NRQ3dlR0tOd2hSSwprTFJkLzFkQkd3WmVNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUFSQmE5bW5sUnU4OEE1TytWWE1IdXdWWnpkClBaM1MrVHVaRngxdCtJZDh5WVgrMnVTOE9TTFNmOUtORkIyMGxNZnFvbG1kd0grNUM2Nm5qM0lVZDJwV3dTelIKZjlLbWdjSnNoUGNkSjdZSnA1emt5MTNjRzkxa1VISGM5TUtnR3VmMzFZOWE1cGVRZFVmSUZVaFA4R0dVb3NGegpOVnN1VzlsNFM5NmVESmRxL3gzeGFMcTNWTmNJdVo5R3F6T0dXUFJ2M0FuT3VHUWxpV1IyZTdLKzNaMEtWNXhoCnZCa3FsS2ZFZ2dUTllvaHdJZjZycFpXVCtkMTVuV3loTG1qaFBkcGk4QW83a1NuOGdNb1RQMXBQTWs2MU8ySEYKWmw5TEt0NXRxaGZMVUxHZU4veGV3b1p2K2dBNXlUL2cwZW5ZVmNERGFROEEvU3FPWWxIRTJ6d1VvUzduCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBMUMrS2lwU2ZpSXRWUHRuQWVmV2M2d2NkWU5rSldHWkpyQThLUndaS3RMUGpXTklyCjZtMEs3MW53NWFzeHo4L3VZUk95R01wbVN4RWVWMVlZR2oyR0NsOXpMZzNUbGJoMTZlWWI2YzZNL2REUENwNXYKVkJUaFBlbWFwTDhEKzI1NjQxUzJtU2NkVi9QSGhwQVZ4VjQxM0FFdktpUFE2cVN1RWdwTXoyTU4yWnFSQnFTUwpPUkVvMmVlUUhnY3hTcHYzc1BMNEllNHlXeFRPcVpJWHlkT2pncyt4MGZnTGdKNEVScmlRNWZMZld4cDRmSCtxCjhaL1RzRGtRSmNQSm1tQlR4RFh6WTFqQzVVY3ZwODduYStCZlFMRlpOZGp2bmZSNUxOeFpmYXJsOHEwUlRYc04KUjdCNnFpbWYzVWhvUWV2cFM5ZjFTRlpERVBNazIraWIvVms1a3dJREFRQUJBb0lCQUJjcktjR0FBUHR6MjFjRgpoOUxKVXQwRzVkcFJXSWZpZzJEYU01RVZ5c3A0YWZhazNFNjRvVjBKUVJpUzNObUlKc3RLejBPTnRpVzBOTS9zCmdxMDYwb3dIYUJnN1FrTXk1UTBwSnhzY2hxQ2dVRHNrbVp0Z3ZFZDZYbnhtcnhTaE42SGkraDAyL0NsQ1lTTDgKVUtSQWFUa2dsL25OOTEzbnBXb3EzY0EzWEtmSjJld0pGbXFqWndpWnBlclBiQ0ZSTDJJczNQZkRmcktlc01vdQpzSW5hY1FtaTFMNG1sV3N1ejFJdTFmaElIMDBnQ2ZQbHp2NzN0c1p4STFWSzV6WVBTMDQzOS9KWkZtRW81K3cvCnhpSkZoWUlERFlJclptSHBETU5QRFIxRERXcFBjNjlOa2h5N2pzaFVwNi9tb3IveDVLRFRpVTRzOGdsakFYd3IKZFEwanV3RUNnWUVBN1dqZHR6TDVScHJIeHN1eFlnWkt5V0dlTlFLaDN1OU82dE03cE12aENza1FZdmlIOVFCTQp6d0ZGNHArM2h3U0IrVmtRYmxhRFcycG1MalpkSUdSN0Vocjg0cUdhQXA2Nm53SURTbkt5OWxaSnl5WUk0ZWlVCkVvUTBoc2dQWURRendpb3VwVkxwcWFTaHNYVU5Hcm9HaW1jMXRiT3VRdzB2RmJaeTRMZUtBZk1DZ1lFQTVNMEkKdkVTUHZTODNUcXZkcFhUSG85Q3VnN1UvTjB4aW1oeDVSSGRVZzdBRmU3OGgxRlBPVkFCbDhJOUhoZkVGU0hwTgpnV2hicC8xcmdOUWg5Ti9PQnFhc1V1MSs1MmRZQW9Mai8xbkhyUXZlZkVZb0xtNUhIcys2UkhYSHlXRkpjWWFRCkNrbmNBeHdFYkwzZERPYmpvZzBmejU0cHgvci82ZmgrYXJBYU1lRUNnWUJTWnRLRjByaDR6Q0pKR3N3ZnBPVnkKVG1LV0xhcTNjVUpuK1JjN2xOUXdaU2M5NHR0MXF6djlvWWg3SjBxUkgzeHBhb05zZUxTeEZ4WU9OaXBPb3ZHZwprQ04wR2ZrVnJiaENsblZEOHRtdzdMUkNRWnBWcHQ4MktoTDlNUlU5SkFGUEJFc2FjTlBQWU9nS2F3RTRaSmIrCmxPSXNoZ2dYRjgxZThPdWdtYlBhQndLQmdEczBDclNja1EwRThLeThzQWVtSmhwdlh4alpoMWdKdmVIZXlFbzkKRG5OYzBxNW9rSnBlYlI4elV5MWlCY0hVMGVjbExuVHp5Zk80RVY4dWhQTFdEbnVPR1QwRUV6aFJkMlorOC93WgpBUi8zMkVRVDYwWElaMExEd1pFQllRYnMwNUk2blg3c0NiQU1TZURSYUNkMGZ5WnBldmZBRjFPVjBTNTdqRXFTCjh0UkJBb0dCQU9SUm4xbjJKVFBkM3EyR05DTXZMMUQxVlpqcFFCTml4ZHFETGxwc0lBMUlIeFZtOVM0ckJ4MEEKdWtOK2lzR3hVcnNLNmc1RFIzUzJhUkREM3YvMHFNWmxGcG9QZmdCaUhGYXhIc0pUKzZveDNYcng3NC9QQ0xzRQpDd0dteVc1M3hKSVFTWmNXc0ZodlkrV1g2TTlUYURBelErbzBMRjd6TEdSOXRaN0pGOG1ICi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+
+controlplane ~ ➜  CLUSTER_NAME=kubernetes
+
+controlplane ~ ➜  echo $CLUSTER_NAME
+kubernetes
+
+controlplane ~ ➜  echo $CLUSTER_NAME
+kubernetes
+
+controlplane ~ ➜  kubectl config view^C
+
+controlplane ~ ✖ APISERVER=https://controlplane:6443
+
+controlplane ~ ➜  echo APISERVER
+APISERVER
+
+controlplane ~ ➜  echo $APISERVER
+https://controlplane:6443
+
+controlplane ~ ➜  kubectl get secrets -n kube-system 
+NAME                     TYPE                            DATA   AGE
+bootstrap-token-cyd0fn   bootstrap.kubernetes.io/token   6      8m2s
+
+controlplane ~ ➜  kubectl get secrets bootstrap-token-cyd0fn -n kube-system -oyaml
+apiVersion: v1
+data:
+  auth-extra-groups: c3lzdGVtOmJvb3RzdHJhcHBlcnM6a3ViZWFkbTpkZWZhdWx0LW5vZGUtdG9rZW4=
+  expiration: MjAyNS0wMy0yNFQwODo1MzoyNFo=
+  token-id: Y3lkMGZu
+  token-secret: Z3Z4dngzZGU2eDZ0NGp2Mw==
+  usage-bootstrap-authentication: dHJ1ZQ==
+  usage-bootstrap-signing: dHJ1ZQ==
+kind: Secret
+metadata:
+  creationTimestamp: "2025-03-23T08:53:24Z"
+  name: bootstrap-token-cyd0fn
+  namespace: kube-system
+  resourceVersion: "253"
+  uid: d84eb6d5-48b1-4004-a179-01b35e55abf0
+type: bootstrap.kubernetes.io/token
+
+controlplane ~ ➜  echo Z3Z4dngzZGU2eDZ0NGp2Mw== | base 
+base32    base64    basename  basenc    
+
+controlplane ~ ➜  echo Z3Z4dngzZGU2eDZ0NGp2Mw== | base 
+base32    base64    basename  basenc    
+
+controlplane ~ ➜  echo Z3Z4dngzZGU2eDZ0NGp2Mw== | base64 
+base64
+
+controlplane ~ ➜  echo Z3Z4dngzZGU2eDZ0NGp2Mw== | base64 
+base64
+
+controlplane ~ ➜  echo Z3Z4dngzZGU2eDZ0NGp2Mw== | base64 -d 
+gvxvx3de6x6t4jv3
+controlplane ~ ➜  TOKEN=gvxvx3de6x6t4jv3
+
+controlplane ~ ➜  echo $TOKEN
+gvxvx3de6x6t4jv3
+
+controlplane ~ ➜  curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN"
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+
+controlplane ~ ✖ curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "Unauthorized",
+  "reason": "Unauthorized",
+  "code": 401
+}
+controlplane ~ ➜  echo Y3lkMGZu | base64 -d 
+cyd0fn
+controlplane ~ ➜  TOKEN=cyd0fn.gvxvx3de6x6t4jv3
+
+controlplane ~ ➜  curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
+{
+  "kind": "APIVersions",
+  "versions": [
+    "v1"
+  ],
+  "serverAddressByClientCIDRs": [
+    {
+      "clientCIDR": "0.0.0.0/0",
+      "serverAddress": "192.168.242.173:6443"
+    }
+  ]
+}
+controlplane ~ ➜  
+
+
+Create a Bootstrap Token as a Secret
+Create a Kubernetes Secret in the kube-system namespace to define a bootstrap token named bootstrap-token-07401b with the following specifications:
+
+Token ID: 07401b
+Token Secret: f395accd246ae52d
+Usages:
+usage-bootstrap-authentication: "true"
+usage-bootstrap-signing: "true"
+Extra Groups:
+auth-extra-groups: system:bootstrappers:kubeadm:default-node-token
+
+
+
+root@controlplane ~ ➜  cat boot.yaml 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bootstrap-token-07401b
+  namespace: kube-system
+type: bootstrap.kubernetes.io/token
+data:
+  auth-extra-groups: c3lzdGVtOmJvb3RzdHJhcHBlcnM6a3ViZWFkbTpkZWZhdWx0LW5vZGUtdG9rZW4=
+  token-id: MDc0MDFi
+  token-secret: ZjM5NWFjY2QyNDZhZTUyZA==
+  usage-bootstrap-authentication: dHJ1ZQ==
+  usage-bootstrap-signing: dHJ1ZQ==
+
+root@controlplane ~ ➜  cat ano.yaml 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bootstrap-token-07401b
+  namespace: kube-system
+type: bootstrap.kubernetes.io/token
+stringData:                             # Here is the diff
+  description: "Bootstrap token for adding new nodes securely."
+  token-id: 07401b
+  token-secret: f395accd246ae52d
+  usage-bootstrap-authentication: "true"
+  usage-bootstrap-signing: "true"
+  auth-extra-groups: system:bootstrappers:kubeadm:default-node-token
+
+
+# retrive the token 
+
+
+controlplane ~ ✖ secret=$(kubectl get serviceaccounts my-service-account -o jsonpath='{.secrets[].name}')
+
+controlplane ~ ➜  echo $secret
+my-service-account-token
+
+controlplane ~ ✖ kubectl get secrets $secret -o jsonpath='{.data.token}' | base64 --decode
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjFsMnhBVzQ4bHRGTVMtNGVlM0ZTSEhhYVlyNWVIdUNfZmFnUWducEdOZUEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6Im15LXNlcnZpY2UtYWNjb3VudC10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJteS1zZXJ2aWNlLWFjY291bnQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIxYjE1OTE0Zi0zZjMzLTRjNDItYTMyYy1hMmFkMjUwODAxODIiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpteS1zZXJ2aWNlLWFjY291bnQifQ.XYVN52hAOgp3LB6pZ6X3U8osab7nt120Siaubg_KZx88uFSZjaCge4sykj3DsuEMEnz7g4o9pAFbS3q6Q-_-6a6AcJ1CiPXb3I3-aeCM9np04ngMs9hh_CBE4ii44Trn-ZuTRyY-S1zwxKpzcSE518xvvsezTHulqwN5QxW7mm0MkOkcbP5PCuOb9_W_1I8PJI2oPzUxMc7oxjksXiXA0hnPCad6arOECYyoBn2L57XDduTtwJwlFLVYY-CYcVEGA_ZeMFrEL-3OZq8wbKN5XY-9gRJhWu7KBsn__ry3RDdfd5CRdORmvEJ_n5gi9TbERmGyRDVg7mkdsJYlIlxJ0Q
+
+
+Step 5: Access the Kubernetes API Server
+Use the retrieved token to access the Kubernetes API server and retrieve the list of pods.
+
+Use curl to make an HTTPS request to the API server.
+Include the token in the Authorization header.
+Use the cluster's CA certificate for SSL verification.
+Note: Replace <token> with your actual Service Account token and <api-server-endpoint> with your API server's endpoint.
+
+
+
+
+
+
+   13  secret=kubectl get serviceaccounts my-service-account -o jsonpath='{.secrets[].name}'
+   14  secret=$(kubectl get serviceaccounts my-service-account -o jsonpath='{.secrets[].name}')
+   15  echo $secret
+   16  kubectl get secrets $secret -o jsonpath='{.data.token}' | base64 -decode
+   17  kubectl get secrets $secret -o jsonpath='{.data.token}' | base64 --decode
+   18  #kubectl -n default create role pod-reader --verb=get,list,watch --resource=pods
+   19  kubectl api-resources -owide | grep pod
+   20  kubectl -n default create role pod-reader --verb=get,list,watch --resource=pods -h
+   21  kubectl -n default create role pod-reader --verb=get,list,watch --resource=pods 
+   22  kubectl -n default create rolebinding -h
+   23  kubectl -n default create rolebinding read-pods --role=pod-reader --serviceaccount=default:my-service-account
+   24  k get secrets 
+   25  k get secrets -o jsonpath='{.data.token}'
+   26  k get secrets -o jsonpath='{.data{}.token}'
+   27  k get secrets -o jsonpath='{.data[].token}'
+   28  k get secrets -oyaml
+   29  k get secrets -o jsonpath='{.data.token}'
+   30  k get secrets -o jsonpath='{.items.data.token}'
+   31  k get secrets -o jsonpath='{.items[].data.token}'
+   32  k get secrets -o jsonpath='{.items[].data.token}' | bash64 --decode
+   33  k get secrets -o jsonpath='{.items[].data.token}' | base64 --decode
+   34  TOKEN=$(k get secrets -o jsonpath='{.items[].data.token}' | base64 --decode)
+   35  echo $TOKEN
+   36  kubectl get config
+   37  kubectl config 
+   38  kubectl config view
+   39  kubectl config view -o jsonpath
+   40  kubectl config view -o jsonpath='{.clusters[].server}'
+   41  kubectl config view -o jsonpath='{.clusters[].cluster.server}'
+   42  APISERVER=$(kubectl config view -o jsonpath='{.clusters[].cluster.server}')
+   43  echo $APISERVER
+   44  curl -x GET -H "Authorization: Bearer $TOKEN" "$APISERVER/api/v1/namespaces/default/pods"
+   45  curl -k -H "Authorization: Bearer $TOKEN" "$APISERVER/api/v1/namespaces/default/pods"

@@ -1,0 +1,813 @@
+➜  ~ cd Git/maaziz-cks 
+➜  maaziz-cks git:(main) ✗ ls
+auditing       ingress-tls                       platform-binary
+csi-benchmark  Killer-Shell-Exam-Simulators.pdf  rbac
+gui-elements   metadata-protection               README.md
+images         network-policy                    somenote.txt
+➜  maaziz-cks git:(main) ✗ mkdir serviceaccount
+➜  maaziz-cks git:(main) ✗ cd serviceaccount 
+➜  serviceaccount git:(main) ✗ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ ls
+➜  serviceaccount git:(main) ✗ k get sa
+E0322 23:13:35.087047    8521 memcache.go:265] "Unhandled Error" err="couldn't get current server API group list: Get \"https://192.168.0.110:6443/api?timeout=32s\": dial tcp 192.168.0.110:6443: connect: no route to host"
+
+
+^C
+➜  serviceaccount git:(main) ✗ VBoxManage startvm "master" --type headless && VBoxManage startvm "worker" --type headless
+Waiting for VM "master" to power on...
+VM "master" has been successfully started.
+Waiting for VM "worker" to power on...
+VM "worker" has been successfully started.
+➜  serviceaccount git:(main) ✗ 
+
+
+
+
+
+
+
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ k get sa
+NAME      SECRETS   AGE
+default   0         17d
+➜  serviceaccount git:(main) ✗ k create sa accessor
+serviceaccount/accessor created
+➜  serviceaccount git:(main) ✗ k get sa
+NAME       SECRETS   AGE
+accessor   0         2s
+default    0         17d
+➜  serviceaccount git:(main) ✗ k get sa accessor -oyaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2025-03-22T17:15:17Z"
+  name: accessor
+  namespace: default
+  resourceVersion: "66653"
+  uid: e0854a9c-0307-4be2-941e-8150affce394
+➜  serviceaccount git:(main) ✗ k create token accessor 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | cut -d "." -f2 | base64 -d | jq
+base64: invalid input
+{
+  "aud": [
+    "https://kubernetes.default.svc.cluster.local"
+  ],
+  "exp": 1742667337,
+  "iat": 1742663737,
+  "iss": "https://kubernetes.default.svc.cluster.local",
+  "jti": "47c9611c-da74-48c9-af60-538aefd183d7",
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "accessor",
+      "uid": "e0854a9c-0307-4be2-941e-8150affce394"
+    }
+  },
+  "nbf": 1742663737,
+  "sub": "system:serviceaccount:default:accessor"
+}
+➜  serviceaccount git:(main) ✗ echo eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ | base64 -d
+{"alg":"RS256","kid":"FEMit2vTr1Z5lpF05Xz_y3jLg---8-msk3Rw88ZSVhw"}base64: invalid input
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | cut -d "." -f2 | base64 -d -i | jq
+base64: invalid input
+{
+  "aud": [
+    "https://kubernetes.default.svc.cluster.local"
+  ],
+  "exp": 1742667337,
+  "iat": 1742663737,
+  "iss": "https://kubernetes.default.svc.cluster.local",
+  "jti": "47c9611c-da74-48c9-af60-538aefd183d7",
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "accessor",
+      "uid": "e0854a9c-0307-4be2-941e-8150affce394"
+    }
+  },
+  "nbf": 1742663737,
+  "sub": "system:serviceaccount:default:accessor"
+}
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw  cut -d "." -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq 
+{
+  "alg": "RS256",
+  "kid": "FEMit2vTr1Z5lpF05Xz_y3jLg---8-msk3Rw88ZSVhw"
+}
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | cut -d "." -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq
+{
+  "aud": [
+    "https://kubernetes.default.svc.cluster.local"
+  ],
+  "exp": 1742667337,
+  "iat": 1742663737,
+  "iss": "https://kubernetes.default.svc.cluster.local",
+  "jti": "47c9611c-da74-48c9-af60-538aefd183d7",
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "accessor",
+      "uid": "e0854a9c-0307-4be2-941e-8150affce394"
+    }
+  },
+  "nbf": 1742663737,
+  "sub": "system:serviceaccount:default:accessor"
+}
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | cut -d "." -f1 | tr '_-' '/+' | base64 -d 2>/dev/null | jq
+{
+  "alg": "RS256",
+  "kid": "FEMit2vTr1Z5lpF05Xz_y3jLg---8-msk3Rw88ZSVhw"
+}
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | cut -d "." -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq
+{
+  "aud": [
+    "https://kubernetes.default.svc.cluster.local"
+  ],
+  "exp": 1742667337,
+  "iat": 1742663737,
+  "iss": "https://kubernetes.default.svc.cluster.local",
+  "jti": "47c9611c-da74-48c9-af60-538aefd183d7",
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "accessor",
+      "uid": "e0854a9c-0307-4be2-941e-8150affce394"
+    }
+  },
+  "nbf": 1742663737,
+  "sub": "system:serviceaccount:default:accessor"
+}
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw "Header:\n$(echo $TOKEN | cut -d '.' -f1 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)" \
+       "\n\nPayload:\n$(echo $TOKEN | cut -d '.' -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)"
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw Header:
+ 
+
+Payload:
+➜  serviceaccount git:(main) ✗ echo -n eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw | "Header:\n$(echo $TOKEN | cut -d '.' -f1 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)" \
+       "\n\nPayload:\n$(echo $TOKEN | cut -d '.' -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)"
+zsh: command not found: Header:\n
+➜  serviceaccount git:(main) ✗ TOKEN=`k create sa accessor`                                                              
+error: failed to create serviceaccount: serviceaccounts "accessor" already exists
+➜  serviceaccount git:(main) ✗ k create sa accessor 
+error: failed to create serviceaccount: serviceaccounts "accessor" already exists
+➜  serviceaccount git:(main) ✗ TOKEN="eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzQyNjY3MzM3LCJpYXQiOjE3NDI2NjM3MzcsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNDdjOTYxMWMtZGE3NC00OGM5LWFmNjAtNTM4YWVmZDE4M2Q3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In19LCJuYmYiOjE3NDI2NjM3MzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmFjY2Vzc29yIn0.ie6nazw0y7TH6N2Ft5EiMf9dUvUXX7uwt6cuR_q_xqWbdHMX304JkaYpAOqydC-zKR3HBbNX1Wa2FuUJDzI4kzIWW5FJ34a6C5mLVZhIVgzYHacGqomclzGcq8UX8pgy21NC8_t1LfSoFz4bLz0X7UT-e7VGC-fVlYSAESw-4bG-v01BzaDlOjvBPzs0-WcKzGo2Q0nEInEBfUzPyJe9aaPIcf725poTecVJWTCxsfEYIY6OUe4yrhtkIfCt-jw9fQvw4WUfqcUfY3ZTINXmSaOhafvKuGDJA5OXEE5_Nou-E7vQJRZtkSS1KZt-k03gLlWpfUYXUy__UoTQgikVQw"
+➜  serviceaccount git:(main) ✗ echo -e "Header:\n$(echo $TOKEN | cut -d '.' -f1 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)" \
+       "\n\nPayload:\n$(echo $TOKEN | cut -d '.' -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq)"
+Header:
+{
+  "alg": "RS256",
+  "kid": "FEMit2vTr1Z5lpF05Xz_y3jLg---8-msk3Rw88ZSVhw"
+} 
+
+Payload:
+{
+  "aud": [
+    "https://kubernetes.default.svc.cluster.local"
+  ],
+  "exp": 1742667337,
+  "iat": 1742663737,
+  "iss": "https://kubernetes.default.svc.cluster.local",
+  "jti": "47c9611c-da74-48c9-af60-538aefd183d7",
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "accessor",
+      "uid": "e0854a9c-0307-4be2-941e-8150affce394"
+    }
+  },
+  "nbf": 1742663737,
+  "sub": "system:serviceaccount:default:accessor"
+}
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ k run httpd --image=nginx --dry-run=client -oyaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: httpd
+  name: httpd
+spec:
+  containers:
+  - image: nginx
+    name: httpd
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+➜  serviceaccount git:(main) ✗ k run httpd --image=nginx --dry-run=client -oyaml> httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ k apply -f httpd-sa.yaml 
+pod/httpd created
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS              RESTARTS      AGE
+httpd      0/1     ContainerCreating   0             2s
+no-trust   1/1     Running             4 (17m ago)   4d
+trust      1/1     Running             4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS              RESTARTS      AGE
+httpd      0/1     ContainerCreating   0             3s
+no-trust   1/1     Running             4 (17m ago)   4d
+trust      1/1     Running             4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS              RESTARTS      AGE
+httpd      0/1     ContainerCreating   0             4s
+no-trust   1/1     Running             4 (17m ago)   4d
+trust      1/1     Running             4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS    RESTARTS      AGE
+httpd      1/1     Running   0             7s
+no-trust   1/1     Running   4 (17m ago)   4d
+trust      1/1     Running   4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS    RESTARTS      AGE
+httpd      1/1     Running   0             8s
+no-trust   1/1     Running   4 (17m ago)   4d
+trust      1/1     Running   4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k get pod
+NAME       READY   STATUS    RESTARTS      AGE
+httpd      1/1     Running   0             9s
+no-trust   1/1     Running   4 (17m ago)   4d
+trust      1/1     Running   4 (17m ago)   4d
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash
+root@httpd:/# mount | grep service
+tmpfs on /run/secrets/kubernetes.io/serviceaccount type tmpfs (ro,relatime,size=3911644k)
+root@httpd:/# cd /run/secrets/kubernetes.io/serviceaccount
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# ls
+ca.crt	namespace  token
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# cat namespace 
+defaultroot@httpd:/run/secrets/kubernetes.io/serviceaccount# 
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# cat token 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkZFTWl0MnZUcjFaNWxwRjA1WHpfeTNqTGctLS04LW1zazNSdzg4WlNWaHcifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzc0MjAwNjkwLCJpYXQiOjE3NDI2NjQ2OTAsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiZWJhOGVhMmQtZjM5OS00MTNkLWFlOWUtZjEyYjU2N2M4YzZhIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwibm9kZSI6eyJuYW1lIjoid29ya2VyIiwidWlkIjoiOGZiOGE0MjktYzc3ZC00NGY5LWE3MmItYTIyNjkwMTNmMjQyIn0sInBvZCI6eyJuYW1lIjoiaHR0cGQiLCJ1aWQiOiJmNzQ5NGFhMC00YTUyLTRlN2ItOGNhOS00Y2UxMzA0YzU0ZTEifSwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFjY2Vzc29yIiwidWlkIjoiZTA4NTRhOWMtMDMwNy00YmUyLTk0MWUtODE1MGFmZmNlMzk0In0sIndhcm5hZnRlciI6MTc0MjY2ODI5N30sIm5iZiI6MTc0MjY2NDY5MCwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6YWNjZXNzb3IifQ.I7DRvQ5MXHarAagHYSsnrtjYRtCuQcZsslN0zokg5anG3IB4-d73Dyiy0Fuv4tT73v6ivC4xC967YHRzEIRd8ry1tlV6A46yTjR8hNotqxkWirVM4txuBxP5MSEQ3VcABpnGJg2mY6oSKNXu1V5XdbHSOcFtMTGnroot@httpd:/run/secrets/kubernetes.io/serviceaccount# env | KUBER
+bash: KUBER: command not found
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# env | grep KUBER
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PORT=443
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# curl https://10.96.0.1 -k
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {},
+  "code": 403
+}root@httpd:/run/secrets/kubernetes.io/serviceaccount# curl https://10.96.0.1 -k -H "Authorization: Bearer $(cat token)"
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {},
+  "status": "Failure",
+  "message": "forbidden: User \"system:serviceaccount:default:accessor\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {},
+  "code": 403
+}root@httpd:/run/secrets/kubernetes.io/serviceaccount# exit
+exit
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml 
+The Pod "httpd" is invalid: spec: Forbidden: pod updates may not change fields other than `spec.containers[*].image`,`spec.initContainers[*].image`,`spec.activeDeadlineSeconds`,`spec.tolerations` (only additions to existing tolerations),`spec.terminationGracePeriodSeconds` (allow it to be set to 1 if it was previously negative)
+  core.PodSpec{
+- 	Volumes: []core.Volume{
+- 		{
+- 			Name:         "kube-api-access-g8fqc",
+- 			VolumeSource: core.VolumeSource{Projected: &core.ProjectedVolumeSource{...}},
+- 		},
+- 	},
++ 	Volumes:        nil,
+  	InitContainers: nil,
+  	Containers: []core.Container{
+  		{
+  			... // 9 identical fields
+  			ResizePolicy:  nil,
+  			RestartPolicy: nil,
+- 			VolumeMounts: []core.VolumeMount{
+- 				{
+- 					Name:      "kube-api-access-g8fqc",
+- 					ReadOnly:  true,
+- 					MountPath: "/var/run/secrets/kubernetes.io/serviceaccount",
+- 				},
+- 			},
++ 			VolumeMounts:  nil,
+  			VolumeDevices: nil,
+  			LivenessProbe: nil,
+  			... // 10 identical fields
+  		},
+  	},
+  	EphemeralContainers: nil,
+  	RestartPolicy:       "Always",
+  	... // 3 identical fields
+  	NodeSelector:                 nil,
+  	ServiceAccountName:           "accessor",
+- 	AutomountServiceAccountToken: nil,
++ 	AutomountServiceAccountToken: &false,
+- 	NodeName:                     "worker",
++ 	NodeName:                     "",
+  	SecurityContext:              &{},
+  	ImagePullSecrets:             nil,
+  	... // 19 identical fields
+  }
+
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml --force --grace-period 0
+pod "httpd" deleted
+pod/httpd replaced
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash              
+error: Internal error occurred: unable to upgrade connection: container not found ("httpd")
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash
+root@httpd:/# mount | grep service
+root@httpd:/#  mount | grep service
+root@httpd:/# exit
+exit
+command terminated with exit code 1
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml                         
+➜  serviceaccount git:(main) ✗ k get pod httpd -oyaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: c2d785d0cd2d3dc8fdb1deeb542d90a2cb75b37ddf9cc59b39674d4b4c7cbc5e
+    cni.projectcalico.org/podIP: 192.168.1.16/32
+    cni.projectcalico.org/podIPs: 192.168.1.16/32
+  creationTimestamp: "2025-03-22T17:39:45Z"
+  labels:
+    run: httpd
+  name: httpd
+  namespace: default
+  resourceVersion: "68970"
+  uid: ad1ecf4a-1637-4b1b-9bef-884ab571fa63
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: httpd
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: worker
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: accessor
+  serviceAccountName: accessor
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-22T17:39:50Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-22T17:39:45Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-22T17:39:50Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-22T17:39:50Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-22T17:39:45Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://94ee410b853af1b3bd05cfa00feddfaf5a30f556999d8e495af8245745e1e7fb
+    image: docker.io/library/nginx:latest
+    imageID: docker.io/library/nginx@sha256:124b44bfc9ccd1f3cedf4b592d4d1e8bddb78b51ec2ed5056c52d3692baebc19
+    lastState: {}
+    name: httpd
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2025-03-22T17:39:49Z"
+  hostIP: 192.168.0.112
+  hostIPs:
+  - ip: 192.168.0.112
+  phase: Running
+  podIP: 192.168.1.16
+  podIPs:
+  - ip: 192.168.1.16
+  qosClass: BestEffort
+  startTime: "2025-03-22T17:39:45Z"
+➜  serviceaccount git:(main) ✗ k edit                                      
+apiservices.apiregistration.k8s.io                              kongconsumers.configuration.konghq.com                        
+bgpconfigurations.crd.projectcalico.org                         kongcustomentities.configuration.konghq.com                   
+bgppeers.crd.projectcalico.org                                  kongingresses.configuration.konghq.com                        
+blockaffinities.crd.projectcalico.org                           konglicenses.configuration.konghq.com                         
+caliconodestatuses.crd.projectcalico.org                        kongplugins.configuration.konghq.com                          
+certificatesigningrequests.certificates.k8s.io                  kongupstreampolicies.configuration.konghq.com                 
+clusterinformations.crd.projectcalico.org                       kongvaults.configuration.konghq.com                           
+clusterrolebindings.rbac.authorization.k8s.io                   kubecontrollersconfigurations.crd.projectcalico.org           
+clusterroles.rbac.authorization.k8s.io                          leases.coordination.k8s.io                                    
+componentstatuses                                               limitranges                                                   
+configmaps                                                      mutatingwebhookconfigurations.admissionregistration.k8s.io    
+controllerrevisions.apps                                        namespaces                                                    
+cronjobs.batch                                                  networkpolicies.crd.projectcalico.org                         
+csidrivers.storage.k8s.io                                       networkpolicies.networking.k8s.io                             
+csinodes.storage.k8s.io                                         networksets.crd.projectcalico.org                             
+csistoragecapacities.storage.k8s.io                             nodes                                                         
+customresourcedefinitions.apiextensions.k8s.io                  persistentvolumeclaims                                        
+daemonsets.apps                                                 persistentvolumes                                             
+deployments.apps                                                poddisruptionbudgets.policy                                   
+endpoints                                                       pods                                                          
+endpointslices.discovery.k8s.io                                 podtemplates                                                  
+events                                                          priorityclasses.scheduling.k8s.io                             
+events.events.k8s.io                                            prioritylevelconfigurations.flowcontrol.apiserver.k8s.io      
+felixconfigurations.crd.projectcalico.org                       replicasets.apps                                              
+flowschemas.flowcontrol.apiserver.k8s.io                        replicationcontrollers                                        
+globalnetworkpolicies.crd.projectcalico.org                     resourcequotas                                                
+globalnetworksets.crd.projectcalico.org                         rolebindings.rbac.authorization.k8s.io                        
+horizontalpodautoscalers.autoscaling                            roles.rbac.authorization.k8s.io                               
+hostendpoints.crd.projectcalico.org                             runtimeclasses.node.k8s.io                                    
+ingressclasses.networking.k8s.io                                secrets                                                       
+ingressclassparameterses.configuration.konghq.com               serviceaccounts                                               
+ingresses.networking.k8s.io                                     services                                                      
+ipamblocks.crd.projectcalico.org                                statefulsets.apps                                             
+ipamconfigs.crd.projectcalico.org                               storageclasses.storage.k8s.io                                 
+ipamhandles.crd.projectcalico.org                               tcpingresses.configuration.konghq.com                         
+ippools.crd.projectcalico.org                                   udpingresses.configuration.konghq.com                         
+ipreservations.crd.projectcalico.org                            validatingadmissionpolicies.admissionregistration.k8s.io      
+jobs.batch                                                      validatingadmissionpolicybindings.admissionregistration.k8s.io
+kongclusterplugins.configuration.konghq.com                     validatingwebhookconfigurations.admissionregistration.k8s.io  
+kongconsumergroups.configuration.konghq.com                     volumeattachments.storage.k8s.io                              
+➜  serviceaccount git:(main) ✗ k edit apiservices.apiregistration.k8s.io q
+➜  serviceaccount git:(main) ✗ k edit pod httpd 
+Edit cancelled, no changes made.
+➜  serviceaccount git:(main) ✗ k edit pod httpd 
+error: pods "httpd" is invalid
+A copy of your changes has been stored to "/tmp/kubectl-edit-3381619382.yaml"
+error: Edit cancelled, no valid changes were saved.
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml --force --grace-period 0 
+pod "httpd" deleted
+pod/httpd replaced
+➜  serviceaccount git:(main) ✗ k edit pod httpd 
+Edit cancelled, no changes made.
+➜  serviceaccount git:(main) ✗ kubectl create clusterrole test -h
+Create a cluster role.
+
+Examples:
+  # Create a cluster role named "pod-reader" that allows user to perform "get", "watch" and "list" on pods
+  kubectl create clusterrole pod-reader --verb=get,list,watch --resource=pods
+  
+  # Create a cluster role named "pod-reader" with ResourceName specified
+  kubectl create clusterrole pod-reader --verb=get --resource=pods --resource-name=readablepod
+--resource-name=anotherpod
+  
+  # Create a cluster role named "foo" with API Group specified
+  kubectl create clusterrole foo --verb=get,list,watch --resource=rs.apps
+  
+  # Create a cluster role named "foo" with SubResource specified
+  kubectl create clusterrole foo --verb=get,list,watch --resource=pods,pods/status
+  
+  # Create a cluster role name "foo" with NonResourceURL specified
+  kubectl create clusterrole "foo" --verb=get --non-resource-url=/logs/*
+  
+  # Create a cluster role name "monitoring" with AggregationRule specified
+  kubectl create clusterrole monitoring --aggregation-rule="rbac.example.com/aggregate-to-monitoring=true"
+
+Options:
+    --aggregation-rule=:
+	An aggregation label selector for combining ClusterRoles.
+
+    --allow-missing-template-keys=true:
+	If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to
+	golang and jsonpath output formats.
+
+    --dry-run='none':
+	Must be "none", "server", or "client". If client strategy, only print the object that would be sent, without
+	sending it. If server strategy, submit server-side request without persisting the resource.
+
+    --field-manager='kubectl-create':
+	Name of the manager used to track field ownership.
+
+    --non-resource-url=[]:
+	A partial url that user should have access to.
+
+    -o, --output='':
+	Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jsonpath,
+	jsonpath-as-json, jsonpath-file).
+
+    --resource=[]:
+	Resource that the rule applies to
+
+    --resource-name=[]:
+	Resource in the white list that the rule applies to, repeat this flag for multiple items
+
+    --save-config=false:
+	If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will
+	be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+
+    --show-managed-fields=false:
+	If true, keep the managedFields when printing objects in JSON or YAML format.
+
+    --template='':
+	Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format
+	is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+
+    --validate='strict':
+	Must be one of: strict (or true), warn, ignore (or false). "true" or "strict" will use a schema to validate
+	the input and fail the request if invalid. It will perform server side validation if ServerSideFieldValidation
+	is enabled on the api-server, but will fall back to less reliable client-side validation if not. "warn" will
+	warn about unknown or duplicate fields without blocking the request if server-side field validation is enabled
+	on the API server, and behave as "ignore" otherwise. "false" or "ignore" will not perform any schema
+	validation, silently dropping any unknown or duplicate fields.
+
+    --verb=[]:
+	Verb that applies to the resources contained in the rule
+
+Usage:
+  kubectl create clusterrole NAME --verb=verb --resource=resource.group [--resource-name=resourcename]
+[--dry-run=server|client|none] [options]
+
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+➜  serviceaccount git:(main) ✗ kubectl create clusterrole test --verb=
+➜  serviceaccount git:(main) ✗ k auth can-i delete secrets --as system:serviceaccount:default:accessor
+no
+➜  serviceaccount git:(main) ✗ k create clusterrolebinding accessor --clusterrole edit --serviceaccount default:accessor
+clusterrolebinding.rbac.authorization.k8s.io/accessor created
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ k delete clusterrolebindings.rbac.authorization.k8s.io accessor 
+clusterrolebinding.rbac.authorization.k8s.io "accessor" deleted
+➜  serviceaccount git:(main) ✗ k create clusterrolebinding accessor --clusterrole cluster-admin --serviceaccount default:accessor
+clusterrolebinding.rbac.authorization.k8s.io/accessor created
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml --force --
+--allow-missing-template-keys  -- If true, ignore any errors in templates when a field or map key is missing in the template. Only app
+--as-group                     -- Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+--as-uid                       -- UID to impersonate for the operation.
+--as                           -- Username to impersonate for the operation. User could be a regular user or a service account in a na
+--cache-dir                    -- Default cache directory
+--cascade                      -- Must be "background", "orphan", or "foreground". Selects the deletion cascading strategy for the dep
+--certificate-authority        -- Path to a cert file for the certificate authority
+--client-certificate           -- Path to a client certificate file for TLS
+--client-key                   -- Path to a client key file for TLS
+--cluster                      -- The name of the kubeconfig cluster to use
+--context                      -- The name of the kubeconfig context to use
+--disable-compression          -- If true, opt-out of response compression for all requests to the server
+--dry-run                      -- Must be "none", "server", or "client". If client strategy, only print the object that would be sent,
+--field-manager                -- Name of the manager used to track field ownership.
+--filename                     -- The files that contain the configurations to replace.
+--grace-period                 -- Period of time in seconds given to the resource to terminate gracefully. Ignored if negative. Set to
+--help                         -- help for replace
+--insecure-skip-tls-verify     -- If true, the server's certificate will not be checked for validity. This will make your HTTPS connec
+--kubeconfig                   -- Path to the kubeconfig file to use for CLI requests.
+--kustomize                    -- Process a kustomization directory. This flag can't be used together with -f or -R.
+--log-flush-frequency          -- Maximum number of seconds between log flushes
+--match-server-version         -- Require server version to match client version
+--namespace                    -- If present, the namespace scope for this CLI request
+--output                       -- Output format. One of: (json, yaml, name, go-template, go-template-file, template, templatefile, jso
+--password                     -- Password for basic authentication to the API server
+--profile                      -- Name of profile to capture. One of (none|cpu|heap|goroutine|threadcreate|block|mutex)
+--profile-output               -- Name of the file to write the profile to
+--raw                          -- Raw URI to PUT to the server.  Uses the transport specified by the kubeconfig file.
+--recursive                    -- Process the directory used in -f, --filename recursively. Useful when you want to manage related man
+--request-timeout              -- The length of time to wait before giving up on a single server request. Non-zero values should conta
+--save-config                  -- If true, the configuration of current object will be saved in its annotation. Otherwise, the annotat
+--server                       -- The address and port of the Kubernetes API server
+--show-managed-fields          -- If true, keep the managedFields when printing objects in JSON or YAML format.
+--subresource                  -- If specified, replace will operate on the subresource of the requested object. This flag is beta and
+--template                     -- Template string or path to template file to use when -o=go-template, -o=go-template-file. The templa
+--timeout                      -- The length of time to wait before giving up on a delete, zero means determine a timeout from the siz
+--tls-server-name              -- Server name to use for server certificate validation. If it is not provided, the hostname used to co
+--token                        -- Bearer token for authentication to the API server
+--username                     -- Username for basic authentication to the API server
+--user                         -- The name of the kubeconfig user to use
+--validate                     -- Must be one of: strict (or true), warn, ignore (or false). "true" or "strict" will use a schema to v
+--vmodule                      -- comma-separated list of pattern=N settings for file-filtered logging (only works for the default tex
+--v                            -- number for the log level verbosity
+--wait                         -- If true, wait for resources to be gone before returning. This waits for finalizers.
+--warnings-as-errors           -- Treat warnings received from the server as errors and exit with a non-zero exit code
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml --force --grace-period 0
+pod "httpd" deleted
+pod/httpd replaced
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash                       
+root@httpd:/# cd /run/secrets/kubernetes.io/serviceaccount
+bash: cd: /run/secrets/kubernetes.io/serviceaccount: No such file or directory
+root@httpd:/# cd /run/secrets/kubernetes.io/serviceaccount^C
+root@httpd:/# mount | grep ser
+root@httpd:/# exit
+exit
+command terminated with exit code 1
+➜  serviceaccount git:(main) ✗ vim httpd-sa.yaml 
+➜  serviceaccount git:(main) ✗ k replace -f httpd-sa.yaml --force --grace-period 0 
+pod "httpd" deleted
+
+pod/httpd replaced
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ 
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash                       
+error: Internal error occurred: unable to upgrade connection: container not found ("httpd")
+➜  serviceaccount git:(main) ✗ k exec -it httpd -it -- bash
+root@httpd:/# cd /run/secrets/kubernetes.io/serviceaccount
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# ls
+ca.crt	namespace  token
+root@httpd:/run/secrets/kubernetes.io/serviceaccount# curl https://10.96.0.1 -k -H "Authorization: Bearer $(cat token)"
+{
+  "paths": [
+    "/.well-known/openid-configuration",
+    "/api",
+    "/api/v1",
+    "/apis",
+    "/apis/",
+    "/apis/admissionregistration.k8s.io",
+    "/apis/admissionregistration.k8s.io/v1",
+    "/apis/apiextensions.k8s.io",
+    "/apis/apiextensions.k8s.io/v1",
+    "/apis/apiregistration.k8s.io",
+    "/apis/apiregistration.k8s.io/v1",
+    "/apis/apps",
+    "/apis/apps/v1",
+    "/apis/authentication.k8s.io",
+    "/apis/authentication.k8s.io/v1",
+    "/apis/authorization.k8s.io",
+    "/apis/authorization.k8s.io/v1",
+    "/apis/autoscaling",
+    "/apis/autoscaling/v1",
+    "/apis/autoscaling/v2",
+    "/apis/batch",
+    "/apis/batch/v1",
+    "/apis/certificates.k8s.io",
+    "/apis/certificates.k8s.io/v1",
+    "/apis/configuration.konghq.com",
+    "/apis/configuration.konghq.com/v1",
+    "/apis/configuration.konghq.com/v1alpha1",
+    "/apis/configuration.konghq.com/v1beta1",
+    "/apis/coordination.k8s.io",
+    "/apis/coordination.k8s.io/v1",
+    "/apis/crd.projectcalico.org",
+    "/apis/crd.projectcalico.org/v1",
+    "/apis/discovery.k8s.io",
+    "/apis/discovery.k8s.io/v1",
+    "/apis/events.k8s.io",
+    "/apis/events.k8s.io/v1",
+    "/apis/flowcontrol.apiserver.k8s.io",
+    "/apis/flowcontrol.apiserver.k8s.io/v1",
+    "/apis/flowcontrol.apiserver.k8s.io/v1beta3",
+    "/apis/networking.k8s.io",
+    "/apis/networking.k8s.io/v1",
+    "/apis/node.k8s.io",
+    "/apis/node.k8s.io/v1",
+    "/apis/policy",
+    "/apis/policy/v1",
+    "/apis/rbac.authorization.k8s.io",
+    "/apis/rbac.authorization.k8s.io/v1",
+    "/apis/scheduling.k8s.io",
+    "/apis/scheduling.k8s.io/v1",
+    "/apis/storage.k8s.io",
+    "/apis/storage.k8s.io/v1",
+    "/healthz",
+    "/healthz/autoregister-completion",
+    "/healthz/etcd",
+    "/healthz/log",
+    "/healthz/ping",
+    "/healthz/poststarthook/aggregator-reload-proxy-client-cert",
+    "/healthz/poststarthook/apiservice-discovery-controller",
+    "/healthz/poststarthook/apiservice-openapi-controller",
+    "/healthz/poststarthook/apiservice-openapiv3-controller",
+    "/healthz/poststarthook/apiservice-registration-controller",
+    "/healthz/poststarthook/apiservice-status-local-available-controller",
+    "/healthz/poststarthook/apiservice-status-remote-available-controller",
+    "/healthz/poststarthook/bootstrap-controller",
+    "/healthz/poststarthook/crd-informer-synced",
+    "/healthz/poststarthook/generic-apiserver-start-informers",
+    "/healthz/poststarthook/kube-apiserver-autoregistration",
+    "/healthz/poststarthook/priority-and-fairness-config-consumer",
+    "/healthz/poststarthook/priority-and-fairness-config-producer",
+    "/healthz/poststarthook/priority-and-fairness-filter",
+    "/healthz/poststarthook/rbac/bootstrap-roles",
+    "/healthz/poststarthook/scheduling/bootstrap-system-priority-classes",
+    "/healthz/poststarthook/start-apiextensions-controllers",
+    "/healthz/poststarthook/start-apiextensions-informers",
+    "/healthz/poststarthook/start-apiserver-admission-initializer",
+    "/healthz/poststarthook/start-cluster-authentication-info-controller",
+    "/healthz/poststarthook/start-kube-aggregator-informers",
+    "/healthz/poststarthook/start-kube-apiserver-identity-lease-controller",
+    "/healthz/poststarthook/start-kube-apiserver-identity-lease-garbage-collector",
+    "/healthz/poststarthook/start-legacy-token-tracking-controller",
+    "/healthz/poststarthook/start-service-ip-repair-controllers",
+    "/healthz/poststarthook/start-system-namespaces-controller",
+    "/healthz/poststarthook/storage-object-count-tracker-hook",
+    "/livez",
+    "/livez/autoregister-completion",
+    "/livez/etcd",
+    "/livez/log",
+    "/livez/ping",
+    "/livez/poststarthook/aggregator-reload-proxy-client-cert",
+    "/livez/poststarthook/apiservice-discovery-controller",
+    "/livez/poststarthook/apiservice-openapi-controller",
+    "/livez/poststarthook/apiservice-openapiv3-controller",
+    "/livez/poststarthook/apiservice-registration-controller",
+    "/livez/poststarthook/apiservice-status-local-available-controller",
+    "/livez/poststarthook/apiservice-status-remote-available-controller",
+    "/livez/poststarthook/bootstrap-controller",
+    "/livez/poststarthook/crd-informer-synced",
+    "/livez/poststarthook/generic-apiserver-start-informers",
+    "/livez/poststarthook/kube-apiserver-autoregistration",
+    "/livez/poststarthook/priority-and-fairness-config-consumer",
+    "/livez/poststarthook/priority-and-fairness-config-producer",
+    "/livez/poststarthook/priority-and-fairness-filter",
+    "/livez/poststarthook/rbac/bootstrap-roles",
+    "/livez/poststarthook/scheduling/bootstrap-system-priority-classes",
+    "/livez/poststarthook/start-apiextensions-controllers",
+    "/livez/poststarthook/start-apiextensions-informers",
+    "/livez/poststarthook/start-apiserver-admission-initializer",
+    "/livez/poststarthook/start-cluster-authentication-info-controller",
+    "/livez/poststarthook/start-kube-aggregator-informers",
+    "/livez/poststarthook/start-kube-apiserver-identity-lease-controller",
+    "/livez/poststarthook/start-kube-apiserver-identity-lease-garbage-collector",
+    "/livez/poststarthook/start-legacy-token-tracking-controller",
+    "/livez/poststarthook/start-service-ip-repair-controllers",
+    "/livez/poststarthook/start-system-namespaces-controller",
+    "/livez/poststarthook/storage-object-count-tracker-hook",
+    "/metrics",
+    "/metrics/slis",
+    "/openapi/v2",
+    "/openapi/v3",
+    "/openapi/v3/",
+    "/openid/v1/jwks",
+    "/readyz",
+    "/readyz/autoregister-completion",
+    "/readyz/etcd",
+    "/readyz/etcd-readiness",
+    "/readyz/informer-sync",
+    "/readyz/log",
+    "/readyz/ping",
+    "/readyz/poststarthook/aggregator-reload-proxy-client-cert",
+    "/readyz/poststarthook/apiservice-discovery-controller",
+    "/readyz/poststarthook/apiservice-openapi-controller",
+    "/readyz/poststarthook/apiservice-openapiv3-controller",
+    "/readyz/poststarthook/apiservice-registration-controller",
+    "/readyz/poststarthook/apiservice-status-local-available-controller",
+    "/readyz/poststarthook/apiservice-status-remote-available-controller",
+    "/readyz/poststarthook/bootstrap-controller",
+    "/readyz/poststarthook/crd-informer-synced",
+    "/readyz/poststarthook/generic-apiserver-start-informers",
+    "/readyz/poststarthook/kube-apiserver-autoregistration",
+    "/readyz/poststarthook/priority-and-fairness-config-consumer",
+    "/readyz/poststarthook/priority-and-fairness-config-producer",
+    "/readyz/poststarthook/priority-and-fairness-filter",
+    "/readyz/poststarthook/rbac/bootstrap-roles",
+    "/readyz/poststarthook/scheduling/bootstrap-system-priority-classes",
+    "/readyz/poststarthook/start-apiextensions-controllers",
+    "/readyz/poststarthook/start-apiextensions-informers",
+    "/readyz/poststarthook/start-apiserver-admission-initializer",
+    "/readyz/poststarthook/start-cluster-authentication-info-controller",
+    "/readyz/poststarthook/start-kube-aggregator-informers",
+    "/readyz/poststarthook/start-kube-apiserver-identity-lease-controller",
+    "/readyz/poststarthook/start-kube-apiserver-identity-lease-garbage-collector",
+    "/readyz/poststarthook/start-legacy-token-tracking-controller",
+    "/readyz/poststarthook/start-service-ip-repair-controllers",
+    "/readyz/poststarthook/start-system-namespaces-controller",
+    "/readyz/poststarthook/storage-object-count-tracker-hook",
+    "/readyz/shutdown",
+    "/version"
+  ]
+}root@httpd:/run/secrets/kubernetes.io/serviceaccount# 
+
+

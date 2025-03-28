@@ -1,0 +1,53 @@
+sysadmin@worker:~$ sudo -i
+[sudo] password for sysadmin: 
+root@worker:~# k config view
+apiVersion: v1
+clusters: null
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users: null
+root@worker:~# cat /etc/kubernetes/kubelet.conf 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJSStYZUQxSkJSa013RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBek1EVXhNVEkzTkRWYUZ3MHpOVEF6TURNeE1UTXlORFZhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUMrcnB2dmc4NlVOUUJtOE4wV2tTc3Y2ZVpKMjJaNkZXdGtNQ3BrbTVMREJXWncvVXJKVHFUbjE0SisKM1JnSFBaRTErY3RjQ0pNU2RzcnV2bVhVazNIRWN5TFlYdW1ZQTRmS2RoZTlrT0QyS0JXZFNBODRqZTZnM01heQpjeXdkMFFOaTdjYjVXZ3RDbm9QVi9LWHBrN1RlelEycFVPaFRDTEFwWFg1Q2lxU2JKS0JzZnBFMTR5a2thUFo5CmpRT2IzdTRCTU5VaEZpM0kzM1FNRnlDVG1LdlZ3SjZPMXg4K1RGRGdIRjJrbCs4T296MXJkaGpYdGREMWZSd1QKTFMyRldEN0w5YVRPd1ZvdWFOZHNFdlRXWUNNR3JHNzNTd0pMNlRmZ2VnZ1NLaDFrTnFDRmNmendzaTFlMG5JKwpjOXhaSVppRkpmVG5nZ1pkdVRQWkE5Vjd6THA1QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTcWVwZ1llc1pLMTJZVGR5NUNnTFcyTkhYTDVEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTNvbHFVZ3Z5TgpQQTlvb0tHa3RRTG5Fend1bEdwaSsvR1ZDd210eUx0eGlhdFV2Z0wwam9LYzlrU2d1UFJSYTRKVXRBb3Y2dmlvCmp0WnZOaDFWZU0wOFlhQ09rZEZSZXQvRTZoQm1NRmtCWHNyWUtKWVI1cGd4bU1kZ3dhNnpHWXAveVF3QlRKTmMKSmJMVWNUYmFYRDlKbHp4K0VtbGRkbmNlR2NVS1g2aUtkd0grT09XZ09mTnZhTzVaSGpPWVArQWU4YVhWL21zZwpNREV5RUtoSDd2Z0hxcElqOW9ORTZMY0EzRFRlWUFSOUVmcEI1T0pSR0hNRXhTaHhCa2E5cm1YUmFpenFWdWxLClZhRm1Iand2V3hYVzVaNEExR0VvdG1ObTFZczVTZ3NNTHZaUzk4QmJETEUxWC9Ya0Z3WEN1OGNEUGpLQzBYbmsKMUNxUW4wYUN1OHg0Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://192.168.0.110:6443
+  name: default-cluster
+contexts:
+- context:
+    cluster: default-cluster
+    namespace: default
+    user: default-auth
+  name: default-context
+current-context: default-context
+kind: Config
+preferences: {}
+users:
+- name: default-auth
+  user:
+    client-certificate: /var/lib/kubelet/pki/kubelet-client-current.pem
+    client-key: /var/lib/kubelet/pki/kubelet-client-current.pem
+root@worker:~# export KUBECONFIG=/etc/kubernetes/kubelet.conf 
+root@worker:~# k get pod
+NAME       READY   STATUS    RESTARTS      AGE
+httpd      1/1     Running   1 (49m ago)   24h
+no-trust   1/1     Running   5 (49m ago)   5d1h
+trust      1/1     Running   5 (49m ago)   5d1h
+root@worker:~# k get ns
+Error from server (Forbidden): namespaces is forbidden: User "system:node:worker" cannot list resource "namespaces" in API group "" at the cluster scope
+root@worker:~# k get nodes
+NAME     STATUS   ROLES           AGE   VERSION
+master   Ready    control-plane   18d   v1.31.1
+worker   Ready    <none>          18d   v1.31.1
+root@worker:~# k label node master cks/test=yes
+Error from server (Forbidden): nodes "master" is forbidden: node "worker" is not allowed to modify node "master"
+root@worker:~# k label node worker cks/test=yes
+node/worker labeled
+root@worker:~# k label node worker node-restriction.kubenetes.io/test=yes
+node/worker labeled
+root@worker:~# k label node worker node-restriction.kubernetes.io/test=yes
+Error from server (Forbidden): nodes "worker" is forbidden: is not allowed to modify labels: node-restriction.kubernetes.io/test
+root@worker:~# #### node-restriction.kubernetes.io  with this starting prifix not allow to set label
+root@worker:~# #https://kubernetes.io/docs/concepts/security/controlling-access/

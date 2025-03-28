@@ -1,0 +1,193 @@
+ABAC is JSON objects per line (JSONL)
+The file format is one JSON object per line.
+
+There should be no enclosing list or map, only one map per line.
+Reference:
+
+https://kubernetes.io/docs/reference/access-authn-authz/abac/
+https://github.com/kubernetes/kubernetes/blob/v1.31.0/pkg/auth/authorizer/abac/example_policy_file.jsonl
+
+
+
+
+Creating an ABAC Policy
+Create a JSON file named abac-policy.jsonl with the following content to define an ABAC policy:
+
+User: system:serviceaccount:default:john
+Namespace: default
+Resource: pods
+API Group: "*"
+Read-only: true
+Policy path: /etc/kubernetes/abac/abac-policy.jsonl
+
+Note: This policy grants read-only access to the pods resource in the default namespace for the service account john.
+
+controlplane /etc/kubernetes/abac ➜  cat abac-policy.jsonl
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user": "system:serviceaccount:default:john", "namespace": "default", "resource": "pods", "apiGroup": "*",  "readonly": true}}
+
+
+
+
+Now add this into kube-api server yaml manifest.
+
+Edit the API server manifest file (usually located at /etc/kubernetes/manifests/kube-apiserver.yaml) and add the following flags under the command section:
+# /etc/kubernetes/manifests/kube-apiserver.yaml
+
+- --authorization-mode=Node,RBAC,ABAC
+- --authorization-policy-file=/etc/kubernetes/abac/abac-policy.jsonl
+Add volume mounts to the API server pod spec:
+# /etc/kubernetes/manifests/kube-apiserver.yaml
+
+volumeMounts:
+# Other volume mounts...
+- name: abac-policy
+  mountPath: /etc/kubernetes/abac
+  readOnly: true
+
+volumes:
+# Other volumes...
+- name: abac-policy
+  hostPath:
+    path: /etc/kubernetes/abac
+    type: DirectoryOrCreate
+
+
+
+Setting Up kubectl Credentials for the Service Account
+Configure kubectl to use the retrieved token by setting up new credentials and context.
+
+Set up credentials named john using the service account token.
+Create a context named john-context using these credentials.
+Switch to the new context.
+Determine the current cluster name:
+
+
+
+----- For this I already create the serviceaccount and secret. Check below fisrt then move to next steps
+
+
+
+controlplane ~ ➜  cat secrets.yaml 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: john-secret
+  annotations:
+    kubernetes.io/service-account.name: "john"
+type: kubernetes.io/service-account-token
+
+controlplane ~ ➜  k get serviceaccounts john -oyaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2025-03-23T10:31:09Z"
+  name: john
+  namespace: default
+  resourceVersion: "2188"
+  uid: ebbfaaf9-4f43-4be7-a7f2-4d1e3b6680b4
+secrets:
+- name: john-secret
+
+controlplane ~ ➜  k get secrets -o jsonpath='{.items[].data.token}' | base64 --decode
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlExamx2WkY5THBnRDd4UjgwRnNCMlZ5cHRiRzJkdG1jRkdlSUY1aDdON0kifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImpvaG4tc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImpvaG4iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJlYmJmYWFmOS00ZjQzLTRiZTctYTdmMi00ZDFlM2I2NjgwYjQiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpqb2huIn0.zJTUZ1hMgwb1KNQR_V7DZGZwgYGAJfCChyYW0vreBgwMVhEMTBrNMxOVDiLOI_mkMhCa5bpjDYbvS3mwCNgU0E2l7k2bnpNqxVPO182nH2GBrD7x99tA-HA-mHxw4iyKL7o55prUvtqrdwp7PtMRWUFterTiiy5oXcBsw1_ixhFZi4KeXJ51HFL4eD_vnJdBRI8MH2o9bX84NbCDkXy8ckBbYVoixCX_g6n_0RUpJ4ZKsDff--i1nVgrcbRSfAH9A8scHGPJHVVq3ro5zxGj1yJ7o8HBnxBRG6m69BXP3lQ1tam0wq1wctbuAby1RhdDNkyUPOiXRLb9ok3zvm2iBA
+
+
+Next Steps:
+
+
+controlplane ~ ➜  echo $SA_TOKEN
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlExamx2WkY5THBnRDd4UjgwRnNCMlZ5cHRiRzJkdG1jRkdlSUY1aDdON0kifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImpvaG4tc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImpvaG4iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJlYmJmYWFmOS00ZjQzLTRiZTctYTdmMi00ZDFlM2I2NjgwYjQiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpqb2huIn0.zJTUZ1hMgwb1KNQR_V7DZGZwgYGAJfCChyYW0vreBgwMVhEMTBrNMxOVDiLOI_mkMhCa5bpjDYbvS3mwCNgU0E2l7k2bnpNqxVPO182nH2GBrD7x99tA-HA-mHxw4iyKL7o55prUvtqrdwp7PtMRWUFterTiiy5oXcBsw1_ixhFZi4KeXJ51HFL4eD_vnJdBRI8MH2o9bX84NbCDkXy8ckBbYVoixCX_g6n_0RUpJ4ZKsDff--i1nVgrcbRSfAH9A8scHGPJHVVq3ro5zxGj1yJ7o8HBnxBRG6m69BXP3lQ1tam0wq1wctbuAby1RhdDNkyUPOiXRLb9ok3zvm2iBA
+
+controlplane ~ ➜  kubectl config set-credentials john --token=$SA_TOKEN
+User "john" set.
+
+controlplane ~ ➜  kubectl configu view
+error: unknown command "configu" for "kubectl"
+
+Did you mean this?
+        config
+
+controlplane ~ ✖ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://controlplane:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: john
+  user:
+    token: REDACTED
+- name: kubernetes-admin
+  user:
+    client-certificate-data: DATA+OMITTED
+    client-key-data: DATA+OMITTED
+
+controlplane ~ ➜  kubectl config set-context john-context --cluster=kubernetes --namespace=default --user=john
+Context "john-context" created.
+
+controlplane ~ ➜  kubectl config use-context john-context 
+Switched to context "john-context".
+
+controlplane ~ ➜  k get pd
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+error: the server doesn't have a resource type "pd"
+
+controlplane ~ ✖ k get pod
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          34m
+
+controlplane ~ ➜  
+
+
+
+controlplane ~ ➜  kubectl run test-pod --image=nginx
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:default:john" cannot create resource "pods" in API group "" in the namespace "default": No policy matched.
+
+
+
+
+Additional Challenge: Modify the ABAC Policy
+Switch back to kubernetes-admin@kubernetes context.
+
+kubectl config use-context kubernetes-admin@kubernetes
+
+Modify the /etc/kubernetes/abac/abac-policy.jsonl policy to grant the john service account permission to create pods in the default namespace:
+
+Update the readonly attribute to false in the policy file.
+Restart the API server to apply the changes.
+Test by creating a pod using the john service account.
+
+
+
+controlplane ~ ➜  cat /etc/kubernetes/abac/abac-policy.jsonl 
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user": "system:serviceaccount:default:john", "namespace": "default", "resource": "pods", "apiGroup": "*",  "readonly": false}}
+
+
+
+Step 2: Restart the API server with new configuration:
+
+In order to restart the API server, we can update the /etc/kubernetes/manifests/kube-apiserver.yaml file and try to update a value which will trigger the restart without any configuration change and reset it to as it was later.
+
+For this example, I am trying to update livenessProbe.failureThreshold value from 8 to 9 and save it. This will trigger the restart of the API server.
+
+Wait for a few seconds for the server to restart and verify the status of the API server via kubectl get pods -A command.
+
+Step 3: Test creating a pod from context john-context:
+
+kubectl config use-context john-context
+kubectl run test-pod --image=nginx -n default
+
+controlplane /etc/kubernetes/manifests ✖ kubectl run test-pod --image=nginx -n default
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+pod/test-pod created

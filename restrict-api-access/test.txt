@@ -1,0 +1,58 @@
+Make sure to have solved the previous Scenario Apiserver Crash.
+
+The Apiserver is not coming up, the manifest is misconfigured in 3 places. Fix it.
+
+
+Log Locations
+
+Log locations to check:
+
+/var/log/pods
+/var/log/containers
+crictl ps + crictl logs
+docker ps + docker logs (in case when Docker is used)
+kubelet logs: /var/log/syslog or journalctl
+
+Issues
+
+For your changes to apply you might have to:
+
+move the kube-apiserver.yaml out of the manifests directory
+wait for apiserver container to be gone (watch crictl ps )
+move the manifest back in and wait for apiserver coming back up
+Some users report that they need to restart the kubelet (service kubelet restart ) but in theory this shouldn't be necessary.
+
+
+Solution 1
+
+The kubelet cannot even create the Pod/Container. Check the kubelet logs in syslog for issues.
+
+
+cat /var/log/syslog | grep kube-apiserver
+
+There is wrong YAML in the manifest at metadata;
+
+
+Solution 2
+
+After fixing the wrong YAML there still seems to be an issue with a wrong parameter.
+
+
+Check logs in /var/log/pods.
+Error: Error: unknown flag: --authorization-modus.
+The correct parameter is --authorization-mode.
+
+Solution 3
+
+After fixing the wrong parameter, the pod/container might be up, but gets restarted.
+
+
+Check container logs or /var/log/pods, where we should find:
+
+
+Error while dialing dial tcp 127.0.0.1:23000: connect:connection refused
+
+Check the container logs: the ETCD connection seems to be wrong. Set the correct port on which ETCD is running (check the ETCD manifest)
+
+
+It should be --etcd-servers=https://127.0.0.1:2379
