@@ -10,7 +10,7 @@ Integration of OPA (Open Policy Agent) with Kubernetes using the Gatekeeper appr
 
 Deploying OPA Gatekeeper is simple. Execute the following command to apply the Gatekeeper specification files:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.14.0/deploy/gatekeeper
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v3.14.0/deploy/gatekeeper.yaml
 ```
 
 After deployment, verify that all Gatekeeper components are installed and running in the `gatekeeper-system` namespace:
@@ -19,9 +19,41 @@ After deployment, verify that all Gatekeeper components are installed and runnin
 kubectl get all -n gatekeeper-system
 ```
 
+Find the API server of `ConstraintTemplate`
+```bash
+kubectl get crd constrainttemplates.templates.gatekeeper.sh -oyaml | grep -A12 conversion
+```
+Output
+```plaintext
+  conversion:
+    strategy: None
+  group: templates.gatekeeper.sh                # This will be the API name
+  names:
+    kind: ConstraintTemplate
+    listKind: ConstraintTemplateList
+    plural: constrainttemplates
+    singular: constrainttemplate
+  scope: Cluster
+  versions:
+  - name: v1                                    # This will be the version
+    schema:
+      openAPIV3Schema:
+```
 
 
 
+For Policy we need to follow below steps
+
+`ConstraintTemplate` -> `And name mention in the ConstraintTemplate metadata name`
+
+In `ConstraintTemplate` we also provide the static analysis Rules for `OPA`
+
+```bash
+$ k get crd | grep const
+constraintpodstatuses.status.gatekeeper.sh            2025-03-28T16:44:32Z
+constrainttemplatepodstatuses.status.gatekeeper.sh    2025-03-28T16:44:32Z
+constrainttemplates.templates.gatekeeper.sh           2025-03-28T16:44:32Z
+k8salwaysdeny.constraints.gatekeeper.sh               2025-03-28T17:38:54Z
 
 
 

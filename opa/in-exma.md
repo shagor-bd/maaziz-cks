@@ -1,3 +1,8 @@
+`Question 7 | Open Policy Agent`
+
+`Preview Question 2`
+
+
 In the **Certified Kubernetes Security Specialist (CKS)** exam, you need to demonstrate practical skills related to **Open Policy Agent (OPA)**, specifically its integration with Kubernetes for enforcing security policies. 
 
 Here’s what you should focus on:
