@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedImageRegistries  # Must match `kind` in ConstraintTemplate
+metadata:
+  name: enforce-image-registries
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]       # Empty string = core API group
+        kinds: ["Pod"]         # Applies to Pods
+    # Optional: Restrict to specific namespaces
+    # namespaces: ["prod", "secure"]
+    # Exclude certain namespaces
+    # excludedNamespaces: ["kube-system"]

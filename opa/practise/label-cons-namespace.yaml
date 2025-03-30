@@ -3,10 +3,11 @@ kind: K8sRequiredLabels
 metadata:
   name: ns-must-have-cks-label
 spec:
-  enforcementAction: "dryrun"
+#  enforcementAction: "dryrun"
   match:
     kinds:
       - apiGroups: [""]
         kinds: ["Namespace"]
+    excludedNamespaces: ["kube-system", "gatekeeper-system", "kube-node-lease", "kube-public"] 
   parameters:
     labels: ["k8s-ns"]

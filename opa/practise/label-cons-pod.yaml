@@ -7,5 +7,6 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
+    excludedNamespaces: ["kube-system", "gatekeeper-system", "kube-node-lease", "kube-public"] 
   parameters:
     labels: ["test-cks-pod", "k8s-app"]

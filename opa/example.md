@@ -250,9 +250,12 @@ spec:
         allowed_registries := {"docker.io", "gcr.io", "k8s.gcr.io"}
         violation[{"msg": msg}] {
           container := input.review.object.spec.containers[_]
-          not startswith(container.image, allowed_registries[_])
+          valid_registry := allowed_registries[_]
+          valid_image:= startswith(container.image, valid_registry)
+          not valid_image
           msg := sprintf("Image %v is from an untrusted registry", [container.image])
         }
+
 ```
 
 ### **Constraint**

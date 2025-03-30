@@ -1,0 +1,17 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: blockdefaultnamespace
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockDefaultNamespace
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package blockdefaultnamespace
+        violation[{"msg": msg}] {
+          input.review.object.metadata.namespace == "default"
+          msg := "Deploying in the default namespace is not allowed"
+        }

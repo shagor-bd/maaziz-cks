@@ -1,0 +1,9 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockDefaultNamespace
+metadata:
+  name: no-default-namespace
+spec:
+  match:
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Deployment", "Pod", "StatefulSet"]

@@ -1,24 +1,21 @@
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
-  name: k8salwaysdeny
+  name: k8shostpathblock
 spec:
   crd:
     spec:
       names:
-        kind: K8sAlwaysDeny
+        kind: K8sHostPathBlock
       validation:
         # Schema for the `parameters` field
-        openAPIV3Schema:
-          properties:
-            message:
-              type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
-        package k8salwaysdeny
-
+        package k8shostpathblock
+      
         violation[{"msg": msg}] {
-          1 < 0
-          msg := input.parameters.message
+          volume:= input.review.object.spec.volumes[_]
+          volume.hostPath
+          msg:= "hostPath cannot use my pod: %v"
         }

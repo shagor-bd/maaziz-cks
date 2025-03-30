@@ -1,0 +1,42 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sblockprivileged
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sBlockPrivileged
+      validation:
+        openAPIV3Schema:
+          type: object   # Added type here
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object   # Specifying that parameters is an object
+                  properties:
+                    securityContextFields:
+                      description: "List of securityContext fields to enforce as false"
+                      type: array
+                      items:
+                        type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sblockprivileged
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+
+          # Iterate over the list of securityContext fields to check
+          field := input.parameters.securityContextFields[_]
+
+          # Check if the field exists and is set to true
+          container.securityContext[field] == true
+
+          # Construct a dynamic message
+          msg := sprintf("Container %v: securityContext field '%v' is not allowed to be true", [container.name, field])
+        }
+

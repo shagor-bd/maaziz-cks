@@ -1,0 +1,34 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sresourcelimit
+spec:
+  crd:
+    spec:
+      names:
+        kind: k8sResourceLimit
+      validation:
+        openAPIV3Schema:
+          properties:
+            parameters:
+              type: object
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sresourcelimit
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+
+          container.resources
+          not container.resources.limits
+          msg := sprintf("Container %v must have CPU/memory limits", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+
+          container.resources
+          not container.resources.requests
+          msg := sprintf("Container %v must have CPU/memory requests", [container.name])
+        }
