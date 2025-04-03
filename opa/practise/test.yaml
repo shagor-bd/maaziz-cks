@@ -1,0 +1,24 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: allowedregistries
+spec:
+  crd:
+    spec:
+      names:
+        kind: AllowedRegistries
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package allowedregistries
+
+        allowed_registry := ["docker.io", "gcr.io"]
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          #container_image := allowed_registry[_]
+          #val_img := startswith(container.image, container_image)
+          not startswith(container.image, allowed_registry[_])
+          #not val_img
+          msg := sprintf("Only images %v from docker.io and gcr.io are allowed", [container.image])
+        }
+#gcr.io/google-samples/hello-app:2.0

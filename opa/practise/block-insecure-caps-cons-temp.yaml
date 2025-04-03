@@ -1,0 +1,19 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: blockinsecurecapabilities
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockInsecureCapabilities
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package blockinsecurecapabilities
+        insecure_capabilities := {"NET_RAW", "SYS_ADMIN", "SYS_MODULE"}
+        violation[{"msg": msg}] {
+          cap := input.review.object.spec.containers[_].securityContext.capabilities.add[_]
+          not insecure_capabilities[cap]
+          msg := sprintf("Dangerous capability %v is not allowed", [cap])
+        }

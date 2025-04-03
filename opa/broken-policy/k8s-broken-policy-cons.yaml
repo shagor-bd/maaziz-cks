@@ -1,0 +1,44 @@
+#Block priviliged containers
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockPrivileged
+metadata:
+  name: no-privileged-containers
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+
+---
+#Enforce Resource Limit
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ResourceLimits
+metadata:
+  name: require-resource-limits
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+---
+# Restrict image regisrty. Only allow from docker.io, gcr.io
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedRegistries
+metadata:
+  name: only-approved-registries
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+---
+# Enforce runAsNonRoot
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRunAsNonRoot
+metadata:
+  name: enforce-nonroot
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]

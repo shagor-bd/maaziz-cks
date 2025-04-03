@@ -1,0 +1,296 @@
+1. Use specific base image version
+2. Dont run as root
+3. Make Filesystem readonly
+4. Remove shell access
+
+
+
+
+➜  example git:(main) ✗ ls
+app.go  Dockerfile  solution
+
+➜  example git:(main) ✗ cat Dockerfile
+FROM ubuntu
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+CMD ["./app"]
+
+➜  example git:(main) ✗ docker build -t app .
+[+] Building 0.6s (9/9) FINISHED                                                                    docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 199B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [1/4] FROM docker.io/library/ubuntu:latest                                                                0.0s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 310B                                                                             0.0s
+ => CACHED [2/4] RUN apt-get update && apt-get install -y golang-go                                           0.0s
+ => CACHED [3/4] COPY app.go .                                                                                0.0s
+ => CACHED [4/4] RUN CGO_ENABLED=0 go build app.go                                                            0.0s
+ => exporting to image                                                                                        0.5s
+ => => exporting layers                                                                                       0.4s
+ => => writing image sha256:da68feea14307817d5b0ebb6297d3b10ca60a3679a427977338d9c517532bf0e                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+
+➜  example git:(main) ✗ docker image list | grep app
+app                             latest    da68feea1430   3 weeks ago     654MB
+
+➜  example git:(main) ✗ # Lets made some changes 
+
+➜  example git:(main) ✗ cat Dockerfile              
+FROM ubuntu                             # This is stage 0
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+
+FROM alpine                             # This is stage 1
+COPY --from=0 /app .                    # Copy stage 0 files
+CMD ["./app"]
+
+➜  example git:(main) ✗ docker build -t app .
+[+] Building 2.5s (12/12) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 311B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/alpine:latest                                              2.3s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [stage-0 1/4] FROM docker.io/library/ubuntu:latest                                                        0.0s
+ => [stage-1 1/2] FROM docker.io/library/alpine:latest@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2  0.0s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 28B                                                                              0.0s
+ => CACHED [stage-0 2/4] RUN apt-get update && apt-get install -y golang-go                                   0.0s
+ => CACHED [stage-0 3/4] COPY app.go .                                                                        0.0s
+ => CACHED [stage-0 4/4] RUN CGO_ENABLED=0 go build app.go                                                    0.0s
+ => CACHED [stage-1 2/2] COPY --from=0 /app .                                                                 0.0s
+ => exporting to image                                                                                        0.0s
+ => => exporting layers                                                                                       0.0s
+ => => writing image sha256:8afec7fccfa8d6f01bb2dc1edc5f0c0e63b5e946f1f6693b34155158f0be5a47                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+
+➜  example git:(main) ✗ docker image list | grep app
+app                             latest    8afec7fccfa8   3 weeks ago     9.85MB
+
+➜  example git:(main) ✗  # Now see previously it was 658 and now its 10M. Thats amazing
+
+➜  example git:(main) ✗ docker run app
+user: root id: 0
+user: root id: 0
+user: root id: 0
+
+
+
+➜  example git:(main) ✗ cat Dockerfile 
+FROM ubuntu                             
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+
+FROM alpine:3.12.1        # Should be use a older version image have security issue
+COPY --from=0 /app .                    
+CMD ["./app"]
+
+➜  example git:(main) ✗ docker build -t app .       
+[+] Building 5.7s (12/12) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 289B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/alpine:3.12.1                                              3.1s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [stage-0 1/4] FROM docker.io/library/ubuntu:latest                                                        0.0s
+ => [stage-1 1/2] FROM docker.io/library/alpine:3.12.1@sha256:c0e9560cda118f9ec63ddefb4a173a2b2a0347082d7dff  2.3s
+ => => resolve docker.io/library/alpine:3.12.1@sha256:c0e9560cda118f9ec63ddefb4a173a2b2a0347082d7dff7dc14272  0.0s
+ => => sha256:c0e9560cda118f9ec63ddefb4a173a2b2a0347082d7dff7dc14272e7841a5b5a 1.64kB / 1.64kB                0.0s
+ => => sha256:d7342993700f8cd7aba8496c2d0e57be0666e80b4c441925fc6f9361fa81d10e 528B / 528B                    0.0s
+ => => sha256:d6e46aa2470df1d32034c6707c8041158b652f38d2a9ae3d7ad7e7532d22ebe0 1.51kB / 1.51kB                0.0s
+ => => sha256:188c0c94c7c576fff0792aca7ec73d67a2f7f4cb3a6e53a84559337260b36964 2.80MB / 2.80MB                2.0s
+ => => extracting sha256:188c0c94c7c576fff0792aca7ec73d67a2f7f4cb3a6e53a84559337260b36964                     0.1s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 28B                                                                              0.0s
+ => CACHED [stage-0 2/4] RUN apt-get update && apt-get install -y golang-go                                   0.0s
+ => CACHED [stage-0 3/4] COPY app.go .                                                                        0.0s
+ => CACHED [stage-0 4/4] RUN CGO_ENABLED=0 go build app.go                                                    0.0s
+ => [stage-1 2/2] COPY --from=0 /app .                                                                        0.1s
+ => exporting to image                                                                                        0.1s
+ => => exporting layers                                                                                       0.1s
+ => => writing image sha256:2075f3e4f51e009347db5a9d3783d4e4c6a4ba91372ef2e945be0e0da9deb8c9                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+
+➜  example git:(main) ✗ docker images | grep app
+app                             latest    2075f3e4f51e   13 seconds ago   7.59MB
+
+➜  example git:(main) ✗ docker run app
+user: root id: 0
+user: root id: 0
+➜  example git:(main) ✗ # Working
+
+
+➜  example git:(main) ✗ # And now dont run container as a root
+➜  example git:(main) ✗ # Lets do it 
+
+➜  example git:(main) ✗ cat Dockerfile 
+FROM ubuntu                             
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+
+FROM alpine:3.12.1
+RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul        # Create user and added in a group
+COPY --from=0 /app /home/abdul    # Copy files into user home direcotry                     
+USER abdul              # So from below all the process will run as a abdul user
+
+➜  example git:(main) ✗ docker build -t app .   
+[+] Building 2.6s (13/13) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 408B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/alpine:3.12.1                                              1.9s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [stage-0 1/4] FROM docker.io/library/ubuntu:latest                                                        0.0s
+ => CACHED [stage-1 1/3] FROM docker.io/library/alpine:3.12.1@sha256:c0e9560cda118f9ec63ddefb4a173a2b2a03470  0.0s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 28B                                                                              0.0s
+ => [stage-1 2/3] RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul                     0.3s
+ => CACHED [stage-0 2/4] RUN apt-get update && apt-get install -y golang-go                                   0.0s
+ => CACHED [stage-0 3/4] COPY app.go .                                                                        0.0s
+ => CACHED [stage-0 4/4] RUN CGO_ENABLED=0 go build app.go                                                    0.0s
+ => [stage-1 3/3] COPY --from=0 /app /home/abdul                                                              0.1s
+ => exporting to image                                                                                        0.1s
+ => => exporting layers                                                                                       0.1s
+ => => writing image sha256:2274777b380ba497f9f7b0943e042325f81ef73686cc5ed276f63eb42b33af0b                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+
+➜  example git:(main) ✗ docker run app
+user: abdul id: 100
+user: abdul id: 100
+user: abdul id: 100
+
+➜  example git:(main) ✗ # Now my app run as abdul user with 100 id
+
+➜  example git:(main) ✗ # Make Filesystem read only
+➜  example git:(main) ✗ vim Dockerfile 
+➜  example git:(main) ✗ cat Dockerfile 
+FROM ubuntu                             
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+
+FROM alpine:3.12.1
+RUN chmod a-w /etc      # Made etc directory in readonly mode so haker cannot made in configuration chages
+RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul
+COPY --from=0 /app /home/abdul                     
+USER abdul              
+CMD ["/home/abdul/app"] 
+➜  example git:(main) ✗ docker build -t app .
+[+] Building 4.2s (14/14) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 515B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/alpine:3.12.1                                              3.2s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [stage-0 1/4] FROM docker.io/library/ubuntu:latest                                                        0.0s
+ => CACHED [stage-1 1/4] FROM docker.io/library/alpine:3.12.1@sha256:c0e9560cda118f9ec63ddefb4a173a2b2a03470  0.0s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 28B                                                                              0.0s
+ => [stage-1 2/4] RUN chmod a-w /etc      # Made etc directory in readonly mode so haker cannot made in conf  0.2s
+ => CACHED [stage-0 2/4] RUN apt-get update && apt-get install -y golang-go                                   0.0s
+ => CACHED [stage-0 3/4] COPY app.go .                                                                        0.0s
+ => CACHED [stage-0 4/4] RUN CGO_ENABLED=0 go build app.go                                                    0.0s
+ => [stage-1 3/4] RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul                     0.4s
+ => [stage-1 4/4] COPY --from=0 /app /home/abdul                                                              0.1s
+ => exporting to image                                                                                        0.1s
+ => => exporting layers                                                                                       0.1s
+ => => writing image sha256:79834404d63b2dfb5c1bb55f4977ed9e2cb96cf8c3009a33f39665cb817d4a64                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+➜  example git:(main) ✗ docker run -d app
+c941de75cd82b41d54525b777512245de7f1d820963b5750f20b4a9071e487b8
+➜  example git:(main) ✗ docker exec -it c941de75cd82b41d54525b777512245de7f1d820963b5750f20b4a9071e487b8 sh
+/ $ ls
+bin    etc    lib    mnt    proc   run    srv    tmp    var
+dev    home   media  opt    root   sbin   sys    usr
+/ $ ls -la
+total 68
+drwxr-xr-x    1 root     root          4096 Apr  3 10:41 .
+drwxr-xr-x    1 root     root          4096 Apr  3 10:41 ..
+-rwxr-xr-x    1 root     root             0 Apr  3 10:41 .dockerenv
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 bin
+drwxr-xr-x    5 root     root           340 Apr  3 10:41 dev
+dr-xr-xr-x    1 root     root          4096 Apr  3 10:41 etc    # You can see /etc now have r-x permission for user
+drwxr-xr-x    1 root     root          4096 Apr  3 10:41 home
+drwxr-xr-x    7 root     root          4096 Oct 21  2020 lib
+drwxr-xr-x    5 root     root          4096 Oct 21  2020 media
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 mnt
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 opt
+dr-xr-xr-x  452 root     root             0 Apr  3 10:41 proc
+drwx------    2 root     root          4096 Oct 21  2020 root
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 run
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 sbin
+drwxr-xr-x    2 root     root          4096 Oct 21  2020 srv
+dr-xr-xr-x   13 root     root             0 Apr  3 10:41 sys
+drwxrwxrwt    2 root     root          4096 Oct 21  2020 tmp
+drwxr-xr-x    7 root     root          4096 Oct 21  2020 usr
+drwxr-xr-x   12 root     root          4096 Oct 21  2020 var
+/ $ exit
+➜  example git:(main) ✗ # So now our system in read only mode
+
+➜  example git:(main) ✗ # Remove SHELL access. Let do this
+➜  example git:(main) ✗ vim Dockerfile 
+➜  example git:(main) ✗ cat Dockerfile 
+FROM ubuntu                             
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y golang-go
+COPY app.go .
+RUN CGO_ENABLED=0 go build app.go
+
+FROM alpine:3.12.1
+RUN chmod a-w /etc      
+RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul
+
+RUN rm -fr /bin/*       # Remove all the binaries
+
+COPY --from=0 /app /home/abdul                     
+USER abdul              
+CMD ["/home/abdul/app"] 
+➜  example git:(main) ✗ docker build -t app .
+[+] Building 3.5s (15/15) FINISHED                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                          0.0s
+ => => transferring dockerfile: 485B                                                                          0.0s
+ => [internal] load metadata for docker.io/library/alpine:3.12.1                                              2.2s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                              0.0s
+ => [internal] load .dockerignore                                                                             0.0s
+ => => transferring context: 2B                                                                               0.0s
+ => [stage-0 1/4] FROM docker.io/library/ubuntu:latest                                                        0.0s
+ => [internal] load build context                                                                             0.0s
+ => => transferring context: 28B                                                                              0.0s
+ => CACHED [stage-1 1/5] FROM docker.io/library/alpine:3.12.1@sha256:c0e9560cda118f9ec63ddefb4a173a2b2a03470  0.0s
+ => [stage-1 2/5] RUN chmod a-w /etc                                                                          0.3s
+ => CACHED [stage-0 2/4] RUN apt-get update && apt-get install -y golang-go                                   0.0s
+ => CACHED [stage-0 3/4] COPY app.go .                                                                        0.0s
+ => CACHED [stage-0 4/4] RUN CGO_ENABLED=0 go build app.go                                                    0.0s
+ => [stage-1 3/5] RUN addgroup -S devgroup && adduser -S abdul -G devgroup -h /home/abdul                     0.3s
+ => [stage-1 4/5] RUN rm -fr /bin/*       # Remove all the binaries                                           0.3s
+ => [stage-1 5/5] COPY --from=0 /app /home/abdul                                                              0.1s
+ => exporting to image                                                                                        0.2s
+ => => exporting layers                                                                                       0.1s
+ => => writing image sha256:3f103a64851bfef742bb30a16c58d15f004f3171b1911eda5898bdd162a68562                  0.0s
+ => => naming to docker.io/library/app                                                                        0.0s
+➜  example git:(main) ✗ docker run -d app
+e05e9fa27dae4921d664a0242aad7d36e8341e09808b72c7cebb3840891af35e
+➜  example git:(main) ✗ docker exec -it e05e9fa27dae4921d664a0242aad7d36e8341e09808b72c7cebb3840891af35e sh
+OCI runtime exec failed: exec failed: unable to start container process: exec: "sh": executable file not found in $PATH: unknown
+➜  example git:(main) ✗ # So we dont have SHELL access to run the container. 
+➜  example git:(main) ✗ 
+ 
+
+Follow the below link to write Dockerfile in efficient way
+https://docs.docker.com/build/building/best-practices/

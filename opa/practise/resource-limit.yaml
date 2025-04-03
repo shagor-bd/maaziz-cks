@@ -10,7 +10,7 @@ spec:
   - image: nginx
     name: httpd
     resources:
-      requests:
+      limits:
         memory: "64Mi"
         cpu: "250m"
   dnsPolicy: ClusterFirst

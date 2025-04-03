@@ -56,3 +56,70 @@ This constraint **enforces the rule** for **Namespace resources**.
 - The **ns-must-have-cks** constraint enforces the same policy on Namespaces.
 - If any Pod or Namespace is created/updated without the **"cks"** label, the OPA/Gatekeeper will **block the operation** and return an error message indicating the missing label.
 
+
+
+
+---
+
+### 💡 **Your Original Code:**  
+```rego
+violation[{"msg": msg}] {
+  container := input.review.object.spec.containers[_]
+  not container.securityContext.runAsNonRoot
+  msg := sprintf("Container %v must run as non-root", [container.name])
+}
+```
+#### ✔️ **Explanation:**  
+- This code checks if the **`runAsNonRoot`** field is **missing** or explicitly set to **`false`**.  
+- The `not` keyword in Rego returns `true` if the **expression does not exist** or evaluates to **`false`**.  
+- This way, it correctly captures both scenarios:  
+  1. **Missing field** (not defined)  
+  2. **Field explicitly set to `false`**  
+
+---
+
+### 🚫 **Your Suggested Alternative:**  
+```rego
+container := input.review.object.spec.containers[_].securityContext.runAsNonRoot == false
+```
+#### ❌ **Why This Fails:**  
+- This statement will **only match when the field explicitly exists and is set to `false`**.  
+- If the `runAsNonRoot` field is **missing**, it will not trigger a violation because Rego will not find the field at all, resulting in an **undefined expression**.  
+
+---
+
+### ✅ **Alternative That Works:**  
+If you want a more compact version while handling both cases (missing or false), you can use:
+```rego
+violation[{"msg": msg}] {
+  container := input.review.object.spec.containers[_]
+  not (container.securityContext.runAsNonRoot == true)
+  msg := sprintf("Container %v must run as non-root", [container.name])
+}
+```
+#### ✔️ **Why This Works:**  
+- The **`not`** outside the entire expression ensures that the rule triggers if:  
+  1. The field does **not exist**.  
+  2. The field is explicitly **set to `false`**.  
+- It correctly covers both cases with a cleaner expression.  
+
+---
+
+### 📝 **Example Usage:**  
+Test with the following Pod manifest:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sh", "-c", "sleep 3600"]
+      securityContext:
+        runAsNonRoot: false
+```
+- If `runAsNonRoot` is **false** or **missing**, the policy will be violated.  
+- If `runAsNonRoot` is **true**, it will pass.  
+

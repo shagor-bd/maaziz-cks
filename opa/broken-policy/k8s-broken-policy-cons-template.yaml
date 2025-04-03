@@ -1,0 +1,83 @@
+#Block priviliged containers
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: blockprivileged
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockPrivileged
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package blockprivileged
+        violation[{"msg": msg}] {
+          input.privileged == true
+          msg := "Privileged containers are not allowed"
+        }
+---
+#Enforce Resource Limit
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: resourcelimits
+spec:
+  crd:
+    spec:
+      names:
+        kind: ResourceLimits
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package resourcelimits
+        violation[{"msg": msg}] {
+          container := input.containers[_]
+          not container.limits
+          msg := "Container must have CPU/memory limits"
+        }
+---
+# Restrict image regisrty. Only allow from docker.io, gcr.io
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: allowedregistries
+spec:
+  crd:
+    spec:
+      names:
+        kind: AllowedRegistries
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package allowedregistries
+        violation[{"msg": msg}] {
+          container := input.review.object.containers[_]
+          not startswith(container.image, "docker.io/")
+          msg := "Only images from docker.io are allowed"
+        }
+---
+# Enforce runAsNonRoot
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8srunasnonroot
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRunAsNonRoot
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srunasnonroot
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+
+          # Incorrectly comparing runAsNonRoot directly to "true"
+          container.securityContext.runAsNonRoot == "true"
+
+          msg := sprintf("Container %v must run as non-root", [container.name])
+        } 
+---

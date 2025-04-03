@@ -1,0 +1,40 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8srestrictedcapabilities
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRestrictedCapabilities
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    restrictedCaps:
+                      type: array
+                      items:
+                        type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srestrictedcapabilities
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          # Iterate through the capabilities in the "add" list
+          cap := container.securityContext.capabilities.add[_]
+
+          # Check if the capability is in the restricted list
+          restricted_cap := input.parameters.restrictedCaps[_]
+          cap == restricted_cap
+
+          msg := sprintf("Capability %v is not allowed for container %v", [cap, container.name])
+        }
+

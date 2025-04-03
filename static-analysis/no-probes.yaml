@@ -1,0 +1,28 @@
+# no-probes.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: no-probes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: no-probes
+  template:
+    metadata:
+      labels:
+        app: no-probes
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25.3-alpine        # Chagne 
+        resources:                        # Added
+          requests:                       # Added
+            cpu: "100m"                   # Added
+            memory: 128Mi                 # Added
+          limits:                         # Added
+            cpu: "200m"                   # Added      
+            memory: 256Mi                 # Added
+        securityContext:                  # Added
+          readOnlyRootFilesystem: true    # Added
+          runAsNonRoot: true              # Added

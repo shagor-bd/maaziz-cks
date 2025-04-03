@@ -1,0 +1,48 @@
+
+name: Generate SBOM Report with Syft
+
+on:
+  workflow_dispatch:     #added
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Syft
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+    - name: Generate SBOM
+      run: |
+        syft azizctg08/app:v1.1 -o spdx-json > spdx.json
+
+    - name: Install Grype 
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+    - name: Generate CVE report
+      run: |
+        grype sbom:./spdx.json -o json > app-spdx-report.json
+
+    - name: Upload SBOM Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: spdx-report
+        path: spdx.json       #modified
+
+
+    - name: Upload Vulnerabilities Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: vuln-report
+        path: app-spdx-report.json       #modified

@@ -1,0 +1,337 @@
+➜  sbom git:(main) ✗ # Generating an SPDX json with syft 
+
+➜  sbom git:(main) ✗ docker image list | grep app
+app                             latest    3f103a64851b   3 hours ago     7.6MB
+
+➜  sbom git:(main) ✗ syft app:latest -o spdx-json > app-spdx.json 
+ ✔ Loaded image                                                                                                                                                                                                             app:latest 
+ ✔ Parsed image                                                                                                                                                sha256:3f103a64851bfef742bb30a16c58d15f004f3171b1911eda5898bdd162a68562 
+ ✔ Cataloged contents                                                                                                                                                 bce9c2d7de86ae25f374e8729cee339764e3df9f538a72880db60c58c5f798da 
+   ├── ✔ Packages                        [16 packages]  
+   ├── ✔ Executables                     [16 executables]  
+   ├── ✔ File metadata                   [64 locations]  
+   └── ✔ File digests                    [64 files]  
+
+➜  sbom git:(main) ✗  Generating an CycloneDX json with syft
+➜  sbom git:(main) ✗ syft app:latest -o cyclonedx-json > app-cyclonedx.json
+ ✔ Loaded image                                                                                                                                                                                                             app:latest 
+ ✔ Parsed image                                                                                                                                                sha256:3f103a64851bfef742bb30a16c58d15f004f3171b1911eda5898bdd162a68562 
+ ✔ Cataloged contents                                                                                                                                                 bce9c2d7de86ae25f374e8729cee339764e3df9f538a72880db60c58c5f798da 
+   ├── ✔ Packages                        [16 packages]  
+   ├── ✔ Executables                     [16 executables]  
+   ├── ✔ File metadata                   [64 locations]  
+   └── ✔ File digests                    [64 files]  
+
+
+➜  sbom git:(main) ✗ # View some artifact from SPDX json
+
+➜  sbom git:(main) ✗ cat app-spdx.json | jq '.packages[] | {name: .name, spdx_id: .SPDXID, version: .versionInfo}'
+{
+  "name": "alpine-baselayout",
+  "spdx_id": "SPDXRef-Package-apk-alpine-baselayout-d9a568e31e19a099",
+  "version": "3.2.0-r7"
+}
+{
+  "name": "alpine-keys",
+  "spdx_id": "SPDXRef-Package-apk-alpine-keys-657cabcdc8a13cc6",
+  "version": "2.2-r0"
+}
+{
+  "name": "apk-tools",
+  "spdx_id": "SPDXRef-Package-apk-apk-tools-4d6379fbfb3d95bf",
+  "version": "2.10.5-r1"
+}
+{
+  "name": "busybox",
+  "spdx_id": "SPDXRef-Package-apk-busybox-dd435ed88b929430",
+  "version": "1.31.1-r19"
+}
+{
+  "name": "ca-certificates-bundle",
+  "spdx_id": "SPDXRef-Package-apk-ca-certificates-bundle-8e42aa1fdca9f3a2",
+  "version": "20191127-r4"
+}
+{
+  "name": "command-line-arguments",
+  "spdx_id": "SPDXRef-Package-go-module-command-line-arguments-dfcf8845a7027973",
+  "version": "(devel)"
+}
+{
+  "name": "libc-utils",
+  "spdx_id": "SPDXRef-Package-apk-libc-utils-55fe71c85bd39bc8",
+  "version": "0.7.2-r3"
+}
+{
+  "name": "libcrypto1.1",
+  "spdx_id": "SPDXRef-Package-apk-libcrypto1.1-004a01f32d1eccee",
+  "version": "1.1.1g-r0"
+}
+{
+  "name": "libssl1.1",
+  "spdx_id": "SPDXRef-Package-apk-libssl1.1-295ab0ea84e29844",
+  "version": "1.1.1g-r0"
+}
+{
+  "name": "libtls-standalone",
+  "spdx_id": "SPDXRef-Package-apk-libtls-standalone-ecf450e392ce3e6d",
+  "version": "2.9.1-r1"
+}
+{
+  "name": "musl",
+  "spdx_id": "SPDXRef-Package-apk-musl-a07d929d3bf02787",
+  "version": "1.1.24-r9"
+}
+{
+  "name": "musl-utils",
+  "spdx_id": "SPDXRef-Package-apk-musl-utils-086eadff2adb36f0",
+  "version": "1.1.24-r9"
+}
+{
+  "name": "scanelf",
+  "spdx_id": "SPDXRef-Package-apk-scanelf-b0162e975ded6ecd",
+  "version": "1.2.6-r0"
+}
+{
+  "name": "ssl_client",
+  "spdx_id": "SPDXRef-Package-apk-ssl-client-73092ebee4f9e11d",
+  "version": "1.31.1-r19"
+}
+{
+  "name": "stdlib",
+  "spdx_id": "SPDXRef-Package-go-module-stdlib-1386623e9f073bfd",
+  "version": "go1.22.2"
+}
+{
+  "name": "zlib",
+  "spdx_id": "SPDXRef-Package-apk-zlib-a318c64c5e6daf21",
+  "version": "1.2.11-r3"
+}
+{
+  "name": "app",
+  "spdx_id": "SPDXRef-DocumentRoot-Image-app",
+  "version": "sha256:bce9c2d7de86ae25f374e8729cee339764e3df9f538a72880db60c58c5f798da"
+}
+
+
+➜  sbom git:(main) ✗ # Scanning the spdx json sbom file with grype to findout vulnerabilities
+
+➜  sbom git:(main) ✗ ls
+app-cyclonedx.json  app-spdx.json  practice-logs.txt  README.md
+
+➜  sbom git:(main) ✗ grype sbom:./app-spdx.json
+ ✔ Scanned for vulnerabilities     [104 vulnerability matches]  
+   ├── by severity: 12 critical, 47 high, 43 medium, 2 low, 0 negligible
+   └── by status:   59 fixed, 45 not-fixed, 0 ignored 
+NAME          INSTALLED   FIXED-IN                      TYPE       VULNERABILITY   SEVERITY 
+apk-tools     2.10.5-r1   2.10.7-r0                     apk        CVE-2021-36159  Critical  
+apk-tools     2.10.5-r1   2.10.6-r0                     apk        CVE-2021-30139  High      
+busybox       1.31.1-r19                                apk        CVE-2022-48174  Critical  
+busybox       1.31.1-r19  1.31.1-r20                    apk        CVE-2021-28831  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42378  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42379  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42380  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42381  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42382  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42383  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42384  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42385  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42386  High      
+busybox       1.31.1-r19  1.31.1-r22                    apk        CVE-2022-28391  High      
+busybox       1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42374  Medium    
+libcrypto1.1  1.1.1g-r0   1.1.1l-r0                     apk        CVE-2021-3711   Critical  
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2022-2068   Critical  
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-5535   Critical  
+libcrypto1.1  1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23840  High      
+libcrypto1.1  1.1.1g-r0   1.1.1k-r0                     apk        CVE-2021-3450   High      
+libcrypto1.1  1.1.1g-r0   1.1.1l-r0                     apk        CVE-2021-3712   High      
+libcrypto1.1  1.1.1g-r0   1.1.1n-r0                     apk        CVE-2022-0778   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2022-4450   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-0215   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-0286   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-0464   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-4807   High      
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-4741   High      
+libcrypto1.1  1.1.1g-r0   1.1.1i-r0                     apk        CVE-2020-1971   Medium    
+libcrypto1.1  1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23841  Medium    
+libcrypto1.1  1.1.1g-r0   1.1.1k-r0                     apk        CVE-2021-3449   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2021-4160   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2022-2097   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2022-4304   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-0465   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-0466   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-2650   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-3446   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-3817   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2023-5678   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-0727   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-13176  Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-2511   Medium    
+libcrypto1.1  1.1.1g-r0                                 apk        CVE-2024-9143   Medium    
+libcrypto1.1  1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23839  Low       
+libssl1.1     1.1.1g-r0   1.1.1l-r0                     apk        CVE-2021-3711   Critical  
+libssl1.1     1.1.1g-r0                                 apk        CVE-2022-2068   Critical  
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-5535   Critical  
+libssl1.1     1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23840  High      
+libssl1.1     1.1.1g-r0   1.1.1k-r0                     apk        CVE-2021-3450   High      
+libssl1.1     1.1.1g-r0   1.1.1l-r0                     apk        CVE-2021-3712   High      
+libssl1.1     1.1.1g-r0   1.1.1n-r0                     apk        CVE-2022-0778   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2022-4450   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-0215   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-0286   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-0464   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-4807   High      
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-4741   High      
+libssl1.1     1.1.1g-r0   1.1.1i-r0                     apk        CVE-2020-1971   Medium    
+libssl1.1     1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23841  Medium    
+libssl1.1     1.1.1g-r0   1.1.1k-r0                     apk        CVE-2021-3449   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2021-4160   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2022-2097   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2022-4304   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-0465   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-0466   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-2650   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-3446   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-3817   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2023-5678   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-0727   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-13176  Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-2511   Medium    
+libssl1.1     1.1.1g-r0                                 apk        CVE-2024-9143   Medium    
+libssl1.1     1.1.1g-r0   1.1.1j-r0                     apk        CVE-2021-23839  Low       
+musl          1.1.24-r9   1.1.24-r10                    apk        CVE-2020-28928  Medium    
+musl-utils    1.1.24-r9   1.1.24-r10                    apk        CVE-2020-28928  Medium    
+ssl_client    1.31.1-r19                                apk        CVE-2022-48174  Critical  
+ssl_client    1.31.1-r19  1.31.1-r20                    apk        CVE-2021-28831  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42378  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42379  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42380  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42381  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42382  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42383  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42384  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42385  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42386  High      
+ssl_client    1.31.1-r19  1.31.1-r22                    apk        CVE-2022-28391  High      
+ssl_client    1.31.1-r19  1.31.1-r21                    apk        CVE-2021-42374  Medium    
+stdlib        go1.22.2    1.21.11, 1.22.4               go-module  CVE-2024-24790  Critical  
+stdlib        go1.22.2    1.21.12, 1.22.5               go-module  CVE-2024-24791  High      
+stdlib        go1.22.2    1.22.7, 1.23.1                go-module  CVE-2024-34156  High      
+stdlib        go1.22.2    1.22.7, 1.23.1                go-module  CVE-2024-34158  High      
+stdlib        go1.22.2    1.21.10, 1.22.3               go-module  CVE-2024-24787  Medium    
+stdlib        go1.22.2    1.22.3                        go-module  CVE-2024-24788  Medium    
+stdlib        go1.22.2    1.21.11, 1.22.4               go-module  CVE-2024-24789  Medium    
+stdlib        go1.22.2    1.22.7, 1.23.1                go-module  CVE-2024-34155  Medium    
+stdlib        go1.22.2    1.22.11, 1.23.5, 1.24.0-rc.2  go-module  CVE-2024-45336  Medium    
+stdlib        go1.22.2    1.22.11, 1.23.5, 1.24.0-rc.2  go-module  CVE-2024-45341  Medium    
+stdlib        go1.22.2    1.22.12, 1.23.6, 1.24.0-rc.3  go-module  CVE-2025-22866  Medium    
+zlib          1.2.11-r3   1.2.12-r2                     apk        CVE-2022-37434  Critical  
+zlib          1.2.11-r3                                 apk        CVE-2023-45853  Critical  
+zlib          1.2.11-r3   1.2.12-r0                     apk        CVE-2018-25032  High
+
+➜  sbom git:(main) ✗ # Also store in JSON format
+
+➜  sbom git:(main) ✗ grype sbom:./app-spdx.json -o json > app-spdx-sbom.json
+ ✔ Scanned for vulnerabilities     [104 vulnerability matches]  
+   ├── by severity: 12 critical, 47 high, 43 medium, 2 low, 0 negligible
+   └── by status:   59 fixed, 45 not-fixed, 0 ignored 
+
+
+➜  sbom git:(main) ✗ # Now check know vulnerabilities from sbom files generated with CycloneDX and save output in JSON format. We can also did this in last steps
+
+➜  sbom git:(main) ✗ grype sbom:./app-cyclonedx.json -o json > app-report.json
+ ✔ Vulnerability DB                [no update available]  
+ ✔ Scanned for vulnerabilities     [104 vulnerability matches]  
+   ├── by severity: 12 critical, 47 high, 43 medium, 2 low, 0 negligible
+   └── by status:   59 fixed, 45 not-fixed, 0 ignored 
+➜  sbom git:(main) ✗ # Lets find out how many CRITICAL vulnerabilities we have  
+➜  sbom git:(main) ✗ 
+➜  sbom git:(main) ✗ jq -r '[.matches[] | select(.vulnerability.severity == "Critical")] | length' app-report.json 
+12
+➜  sbom git:(main) ✗ 
+
+
+➜  sbom git:(main) ✗  # See a query from json file
+➜  sbom git:(main) ✗ cat app-report.json | jq '.matches[] | {vulnerability_id: .vulnerability.id, severity: .vulnerability.severity,}'                       
+{
+  "vulnerability_id": "CVE-2021-36159",
+  "severity": "Critical"
+}
+{
+  "vulnerability_id": "CVE-2021-30139",
+  "severity": "High"
+}
+{
+  "vulnerability_id": "CVE-2022-48174",
+  "severity": "Critical"
+}
+{
+  "vulnerability_id": "CVE-2021-42385",
+  "severity": "High"
+}
+{
+  "vulnerability_id": "CVE-2021-42386",
+  "severity": "High"
+}
+......................................................
+......................................................
+
+➜  sbom git:(main) ✗  # See some more query from json file
+➜  sbom git:(main) ✗ cat app-report.json | jq '.matches[] | {vulnerability_id: .vulnerability.id, severity: .vulnerability.severity,}' | grep -B3 -i critical
+{
+  "vulnerability_id": "CVE-2021-36159",
+  "severity": "Critical"
+--
+}
+{
+  "vulnerability_id": "CVE-2022-48174",
+  "severity": "Critical"
+--
+}
+{
+  "vulnerability_id": "CVE-2021-3711",
+  "severity": "Critical"
+}
+{
+  "vulnerability_id": "CVE-2022-2068",
+  "severity": "Critical"
+}
+......................................................
+......................................................
+
+➜  sbom git:(main) ✗ # Examine the app-report.json report and find the severity level assigned to the vulnerability CVE-2022-48174
+➜  sbom git:(main) ✗ cat app-report.json | jq -e '.matches[] | select(.vulnerability.id == "CVE-2022-48174")' | less
+{
+  "vulnerability": {
+    "id": "CVE-2022-48174",
+    "dataSource": "https://nvd.nist.gov/vuln/detail/CVE-2022-48174",
+    "namespace": "nvd:cpe",
+    "severity": "Critical",
+    "urls": [
+      "https://bugs.busybox.net/show_bug.cgi?id=15216",
+      "https://bugs.busybox.net/show_bug.cgi?id=15216",
+      "https://security.netapp.com/advisory/ntap-20241129-0001/"
+    ],
+    "description": "There is a stack overflow vulnerability in ash.c:6030 in busybox before 1.35. In the environment of Internet of Vehicles, this vulnerability can be executed from command to arbitrary code execution.",
+    "cvss": [
+      {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "version": "3.1",
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "metrics": {
+          "baseScore": 9.8,
+          "exploitabilityScore": 3.9,
+          "impactScore": 5.9
+        },
+        "vendorMetadata": {}
+      }
+    ],
+.....................................................
+
+➜  sbom git:(main) ✗ # The vulnerability CVE-2018-1000517 in BusyBox wget could result in which type of security issue
+
+➜  sbom git:(main) ✗ jq -e '.matches[] | select(.vulnerability.id == "CVE-2022-48174") | .vulnerability.description' app-report.json
+"There is a stack overflow vulnerability in ash.c:6030 in busybox before 1.35. In the environment of Internet of Vehicles, this vulnerability can be executed from command to arbitrary code execution."
+"There is a stack overflow vulnerability in ash.c:6030 in busybox before 1.35. In the environment of Internet of Vehicles, this vulnerability can be executed from command to arbitrary code execution."
+➜  sbom git:(main) ✗ 
+
