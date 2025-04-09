@@ -3,7 +3,6 @@
 ## Pipeline create for scan
 Now we will create a pipeline for create SBOM report. For this we will use `syft` and `grype`
 ```yaml
-
 name: Generate SBOM Report with Syft
 
 on:

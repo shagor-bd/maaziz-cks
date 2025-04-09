@@ -2,11 +2,15 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: myapp
+  labels: 
+    id: myapplication
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: mydb
+  labels: 
+    id: mydatabase
 ---
 apiVersion: apps/v1
 kind: Deployment
