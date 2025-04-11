@@ -1,5 +1,4 @@
-# CILIUM 
-![Alt Text](images/cilium_logo.png)
+![Cilium](../images/cilium_logo.png)
 
 ## Installing Cilium and Enabling Encryption
 Follow below procedure for enabled encryption by installing Cilium:
@@ -16,11 +15,14 @@ helm install cilium cilium/cilium --version 1.16.3 \
 ```
 You can verify that Cilium is running and that encryption is enabled by running the following commands:
 
-### Wait for the status of cilium to be OK
+- Wait for the status of cilium to be OK
+```bash
 cilium status
-### Check the encryption status of the Cilium installation
+```
+- Check the encryption status of the Cilium installation
+```bash
 cilium encryption status
-
+```
 
 ## What is wiregurd
 A VPN protocol that provides encrypted network communication
