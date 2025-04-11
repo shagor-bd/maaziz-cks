@@ -1,5 +1,5 @@
 # CILIUM 
-![Alt Text](./images/Cilium_Logo.svg.png)
+![Alt Text](images/cilium_logo.png)
 
 ## Installing Cilium and Enabling Encryption
 Follow below procedure for enabled encryption by installing Cilium:
