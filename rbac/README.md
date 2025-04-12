@@ -239,10 +239,168 @@ kubectl config view
 kubectl config get-contexts
 kubectl config use-context jane
 ```
+# ABAC Authorization
 
+## Creating an ABAC Policy
+Create a JSON file named abac-policy.jsonl with the following content to define an ABAC policy:
+
+- User: `system:serviceaccount:default:john`
+- Namespace: `default`
+- Resource: `pods`
+- API Group: `"*"`
+- Read-only: `true`
+- Policy path: `/etc/kubernetes/abac/abac-policy.jsonl`
+
+**Note:** This policy grants `read-only` access to the `pods` resource in the `default` namespace for the `serviceaccount` `john`.
+
+```bash
+$ vim /etc/kubernetes/abac/abac-policy.jsonl
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user": "system:serviceaccount:default:john", "namespace": "default", "resource": "pods", "apiGroup":"*", "readonly": true}}
+```
+## Configuring the API Server to Use ABAC
+
+Configure the Kubernetes API server to use the ABAC authorization mode with the policy file you created.
+
+- Update the Kube-API server configuration to include the following parameters:
+
+```bash
+vim /etc/kubernetes/manifests/kube-apiserver.yaml
+```
+Add below line
+```plaintext
+  --authorization-policy-file=/etc/kubernetes/abac/abac-policy.jsonl
+  --authorization-mode=Node,RBAC,ABAC
+```
+- Add volume mounts to the API server pod spec:
+
+```bash
+volumeMounts:
+# Other volume mounts...
+- name: abac-policy
+  mountPath: /etc/kubernetes/abac
+  readOnly: true
+
+volumes:
+# Other volumes...
+- name: abac-policy
+  hostPath:
+    path: /etc/kubernetes/abac
+    type: DirectoryOrCreate
+```
+Use `crictl ps -a` to check the status of the `kube-apiserver` container.
+
+
+## Creating a Service Account and Retrieving Its Token
+
+Create a `serviceaccount` named `john` in the `default` namespace.
+ - Create a secret named `john-secret` to store the token.
+ - Associate the secret with the service account.
+
+```bash
+# Create service account and secret
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: john
+  namespace: default
+secrets:
+- name: john-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: john-secret
+  annotations:
+    kubernetes.io/service-account.name: john
+type: kubernetes.io/service-account-token
+```
+
+Lets see the secret token for serviceaccount `john`
+
+```bash
+$ kubectl get secrets john-secret -o jsonpath={.data.token} | base64 -d
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkdVTkVfY3RBSWI3eHlpVXhhR2NQUWtMX2xmVnJMVkdheTI0RDZoMHBWRDAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImpvaG4tc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImpvaG4iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI2M2ExZWM4ZC04Njg1LTQ0OTQtYTQyYy04ZjljNzQ1NjU2NGMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpqb2huIn0.IW-_EReB1aWKCTpPEmYHQja8_tbC2g0bUkhaejMHh9-tHDC7NcbKBnnbRXknhC-IVB2Bt2H2Cr5UaREExHmW_BawWAF3GwkuYo4L35Jxz3_ijloP-Lire_pwyMZpteUwSsT0fWEwuMGNau6th0NrFeW6asxR2LKCTrCAwOCDp8De7Hf7IAovAR_jZDLS1IJI-9Sa_bxqj-Xzkoexfxr0wFjvEmvNE8U0mP_N40JV-HJGxgIpe-B0v1cljpdHTRa4ALnEt8fb2sUj80dWp7ybAhBTZCYBC1DBeclHMDJdpSmFVDjw0hADBNrTHfshWR1bEdmTUlyeFDQoDKuoI6VGig
+```
+
+## Setting Up `kubectl` Credentials for the Service Account
+
+Configure `kubectl` to use the retrieved token by setting up new credentials and context.
+
+- Set up credentials named `john` using the service account token.
+- Create a context named `john-context` using these credentials.
+- Switch to the new context.
+
+Determine the current cluster name:
+```bash
+kubectl config view -o jsonpath='{.clusters[*].name}'
+# output
+# kubernetes 
+```
+- Set the credentials
+```bash
+kubectl config set-credentials john --token=$(kubectl get secrets john-secret -o jsonpath={.data.token} | base64 -d)
+# User "john" set
+```
+OR
+```bash
+kubectl get secrets john-secret -o jsonpath={.data.token} | base64 -d > john-secret.txt
+export SA_TOKEN=$(cat john-secret.txt)
+kubectl config set-credentials john --token=$SA_TOKEN
+```
+- Create a context named `john-context`
+```bash
+kubectl config set-context john-context --cluster=kubernetes --namespace=default --user=john
+```
+- Switch to new context
+```bash
+kubectl config use-context john-context
+```
+
+**Now run command using running context
+```bash
+➜  kubectl config get-contexts 
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         john-context                  kubernetes   john               default
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   
+
+➜ kubectl get pod
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          38m
+
+# John have no permission for create pod
+➜  kubectl run httpd --image=nginx
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:default:john" cannot create resource "pods" in API group "" in the namespace "default": No policy matched.
+```
+### Modify the ABAC policy
+
+Modify the `/etc/kubernetes/abac/abac-policy.jsonl` policy to grant the `john` `serviceaccount` permission to `create pods` in the `default` namespace:
+
+- Update the `readonly` attribute to `false` in the policy file.
+- Restart the API server to apply the changes.
+- Test by creating a pod using the john service account.
+
+**Step 1:** Update the /etc/kubernetes/abac/abac-policy.jsonl file:
+```bash
+{"apiVersion": "abac.authorization.kubernetes.io/v1beta1", "kind": "Policy", "spec": {"user": "system:serviceaccount:default:john", "namespace": "default", "resource": "pods", "readonly": false}}
+```
+After made the changes need to restart the kube-apiserver pod. 
+
+**Step 2:** Test creating a pod from context john-context:
+```bash
+kubectl config use-context john-context
+kubectl run test-pod --image=nginx -n default
+```
+Output:
+```plaintext
+Warning: Use tokens from the TokenRequest API or manually created secret-based tokens instead of auto-generated secret-based tokens.
+pod/test-pod created
+```
 
 Reference:</br>
 [K8S Docs](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)</br>
+[ABAC](https://kubernetes.io/docs/reference/access-authn-authz/abac/)</br>
 [Create Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-role)</br>
 [Create Role Buinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-rolebinding)</br>
 [Create Cluster Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#kubectl-create-clusterrole)</br>

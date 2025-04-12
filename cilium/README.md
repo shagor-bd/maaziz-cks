@@ -65,10 +65,11 @@ The watch `curl` command should return the HTML content of the NGINX welcome pag
 
 Run a bash shell in one of the Cilium pods with 
 ```bash
-kubectl -n kube-system exec -ti ds/cilium -- bash and execute the following commands:
+kubectl -n kube-system exec -ti ds/cilium -- bash
 ```
-Check that WireGuard has been enabled (number of peers should correspond to a number of nodes subtracted by one):
+**Execute the following commands inside `ds/cilium` `bash`:**
 ```bash
+#Check that WireGuard has been enabled (number of peers should correspond to a number of nodes subtracted by one):
 cilium-dbg status | grep Encryption
 
 #Install tcpdump
