@@ -5,14 +5,13 @@ To create the Kubernetes dashboard resources in the terminal run the following c
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 ```
 
-Now run `kubectl proxy` with the command `kubectl proxy --address=0.0.0.0 --disable-filter &`
+Now run `kubectl proxy` with the command `kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard 8443:443`
 
 Open the URL in you workstation
 
-Append `/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login` to URL to check login UI
-
-**Note:** From a security perspective do not use `--disable-filter` option as it can leave you vulnerable to XSRF attacks, when used with an accessible port. We have used this option to make our lab environment work with the `kubernetes dashboard` so you can access it through a browser. Ideally you would be accessing it through a `kubectl proxy` on your `localhost` only.
-So in actual environments do not use `--disable-filter` option as its a major security risk.
+```bash
+https://localhost:8443
+```
 
 ![kubernetes dashboard](../images/k8s-dashboard.png)
 
@@ -43,14 +42,20 @@ metadata:
     kubernetes.io/service-account.name: "admin-user"
 type: kubernetes.io/service-account-token  
 ---
-# admin-user-clusterrolebuinding.yaml
+# admin-user-clusterrolebuinding
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  creationTimestamp: null
   name: admin-user-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
 ```
 
 Now read the token 
