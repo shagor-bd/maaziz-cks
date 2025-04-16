@@ -186,7 +186,7 @@ EOF
 ```
 
 
-## Links:
+## Ref. Links:
 
 [Upgrade K8S Dashboard](https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard) 
 
