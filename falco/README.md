@@ -1,3 +1,4 @@
+![Falco](../images/falco-horizontal-color.png)
 # Falco 
 
 ## Task
@@ -9,7 +10,7 @@
 | Acceptance criteria | use `falco` or `sysdig`, prepare logs in format:<br/><br/>`time-with-nanosconds,container-id,container-name,user-name,kubernetes-namespace,kubernetes-pod-name`<br/><br/>for pod with image `nginx` and store log to `/var/work/tests/artifacts/12/log` |
 ---
 
-## Isntall Falco or Sysdig in Worker Node
+## Install Falco or Sysdig in Worker Node
 
 ### Falco
 
