@@ -87,3 +87,93 @@ The `-n` option avoids DNS lookups, and the `-X` option shows packet content in 
 Via `tcpdump`, you should see the traffic between the pods.
 
 We see requests from `curlpod` to `nginx` and responses from `nginx` to `curlpod` in `tcpdump` output.
+
+
+## Practice Lab
+
+Run below shell script for create senario
+```bash
+sh create-scenario-cilium.sh
+```
+```plaintext
+cleaning team-orange
+Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+namespace "team-orange" force deleted
+
+Create senario for CiliumNetworkPolicy
+namespace/team-orange created
+statefulset.apps/database created
+service/database created
+deployment.apps/transmitter created
+deployment.apps/messenger created
+ciliumnetworkpolicy.cilium.io/default-allow created
+pod/database-0 condition met
+pod/messenger-54f9cd4589-k8sdt condition met
+pod/messenger-54f9cd4589-wh5jw condition met
+pod/transmitter-d7d5d6b65-g2lb5 condition met
+pod/transmitter-d7d5d6b65-hx6d7 condition met
+
+Pods and Services in Namespace team-orange
+NAME                         STATUS   AGE  IP          LABELS
+database-0                   Running  5s   10.0.0.121  apps.kubernetes.io/pod-index=0,controller-revision-hash=database-855784d4bc,statefulset.kubernetes.io/pod-name=database-0,type=database
+messenger-54f9cd4589-k8sdt   Running  4s   10.0.0.150  pod-template-hash=54f9cd4589,type=messenger
+messenger-54f9cd4589-wh5jw   Running  4s   10.0.0.168  pod-template-hash=54f9cd4589,type=messenger
+transmitter-d7d5d6b65-g2lb5  Running  5s   10.0.0.127  pod-template-hash=d7d5d6b65,type=transmitter
+transmitter-d7d5d6b65-hx6d7  Running  5s   10.0.0.26   pod-template-hash=d7d5d6b65,type=transmitter
+NAME      CLUSTER-IP     PORT(S)  SELECTOR
+database  10.108.160.62  80/TCP   type=database
+
+Existing CiliumNetworkPolicy in Namespace team-orange
+NAME            AGE
+default-allow   4s
+```
+
+### Questions
+
+In Namespace `team-orange` a Default-Allow strategy for all Namespace-internal traffic was chosen. There is an existing CiliumNetworkPolicy `default-allow` which assures this and which should not be altered. That policy also allows cluster internal DNS resolution.
+
+Now it's time to deny and authenticate certain traffic. Create 3 CiliumNetworkPolicies in Namespace team-orange to implement the following requirements:
+
+1. Create a `Layer 3` policy named `p1` to: </br>
+   Deny outgoing traffic from Pods with label `type=messenger` to Pods behind Service `database`
+
+2. Create a `Layer 4` policy named `p2` to: </br>
+   Deny outgoing `ICMP` traffic from Deployment `transmitter` to Pods behind Service `database`
+
+3. Create a `Layer 3` policy named `p3` to: </br>
+   Enable Mutual Authentication for outgoing traffic from Pods with label `type=database` to Pods with label `type=messenger`
+
+ℹ️ All Pods in the Namespace run plain Nginx images with open port 80. This allows simple connectivity tests like: `kubectl -n team-orange exec POD_NAME -- curl database`
+
+For cilium we can take help from this [cilium policy editor](https://editor.networkpolicy.io/)
+
+First explain the existing Pods and the Service we should work with. We can see that the `database` Service points to the `database-0` Pod. And this is the existing `default-allow` policy:
+
+```yaml
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-allow
+  namespace: team-orange
+spec:
+  endpointSelector:
+    matchLabels: {}             # Apply this policy to all Pods in Namespace team-orange 
+  egress:
+  - toEndpoints:
+    - {}                        # ALLOW egress to all Pods in Namespace team-orange
+  - toEndpoints:              
+      - matchLabels:
+          io.kubernetes.pod.namespace: kube-system
+          k8s-app: kube-dns
+    toPorts:
+      - ports:
+          - port: "53"
+            protocol: UDP
+        rules:
+          dns:
+            - matchPattern: "*"
+  ingress:
+  - fromEndpoints:              # ALLOW ingress from all Pods in Namespace team-orange
+    - {}
+```
+ℹ️ CiliumNetworkPolicies behave like vanilla NetworkPolicies: once one egress rule exists, all other egress is forbidden. This is also the case for `egressDeny` rules: once one `egressDeny` rule exists, all other egress is also forbidden, unless allowed by an egress rule. This is why a `Default-Allow` policy like this one is necessary in this scenario. The behaviour explained above for egress is also the case for ingress.
