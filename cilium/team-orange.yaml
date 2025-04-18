@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-orange
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: database
+  namespace: team-orange
+  labels:
+    type: database
+spec:
+  serviceName: database  # Required field for StatefulSets
+  replicas: 1  # Default to 1, adjust as needed
+  selector:
+    matchLabels:
+      type: database  # Must match the pod template's labels
+  template:
+    metadata:
+      labels:
+        type: database
+    spec:
+      containers:
+      - image: nginx:1.27.1-alpine
+        name: database
+        ports:
+        - containerPort: 80
+          name: web
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database
+  namespace: team-orange
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    type: database
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmitter
+  namespace: team-orange
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: transmitter
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        type: transmitter
+    spec:
+      containers:
+      - image: nginx:1.27.1-alpine
+        name: transmitter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messenger
+  namespace: team-orange
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: messenger
+  template:
+    metadata:
+      labels:
+        type: messenger
+    spec:
+      containers:
+      - image: nginx:1.27.1-alpine
+        name: messenger
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-allow
+  namespace: team-orange
+spec:
+  egress:
+  - toEndpoints:
+    - {}
+  - toEndpoints:
+    - matchLabels:
+        io.kubernetes.pod.namespace: kube-system
+        k8s-app: kube-dns
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      rules:
+        dns:
+        - matchPattern: '*'
+  endpointSelector:
+    matchLabels: {}
+  ingress:
+  - fromEndpoints:
+    - {}
