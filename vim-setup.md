@@ -25,3 +25,17 @@ expandtab: use spaces for tab
 tabstop: amount of spaces used for tab
 shiftwidth: amount of spaces used during indentation
 ```
+### setup terminal
+```bash
+apt-get --allow-unauthenticated update
+apt-get --allow-unauthenticated install -y bash-completion binutils
+echo 'colorscheme ron' >> ~/.vimrc
+echo 'set tabstop=2' >> ~/.vimrc
+echo 'set shiftwidth=2' >> ~/.vimrc
+echo 'set expandtab' >> ~/.vimrc
+echo 'source <(kubectl completion bash)' >> ~/.bashrc
+echo 'alias k=kubectl' >> ~/.bashrc
+echo 'alias c=clear' >> ~/.bashrc
+echo 'complete -F __start_kubectl k' >> ~/.bashrc
+sed -i '1s/^/force_color_prompt=yes\n/' ~/.bashrc
+```

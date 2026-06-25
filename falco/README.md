@@ -122,6 +122,50 @@ kubectl -n default scale deployments.apps deployment3 --replicas=0
 kubectl -n default scale deployments.apps deployment4 --replicas=0
 kubectl -n blue-team scale deployments.apps deployment1 --replicas=0
 ```
+---
+
+## Customize Falco Output Fields
+
+In this step, you will modify Falco's default output fields to include only specific information in the logs.
+
+[] Task
+Modify the Falco output format to only include the following fields in syslog:
+
+- **time**
+- **priority**
+- **rule**
+- **output**
+
+**Instructions**
+
+1. Create a custom config file at `/etc/falco/falco.yaml` with these settings:
+
+```bash
+# Output section should look like:
+time_format_iso_8601: true
+
+outputs:
+  syslog:
+    enabled: true
+    keep_alive: false
+    priority: notice
+    output_fields:
+      - time
+      - priority 
+      - rule
+      - output
+```
+2. Restart the Falco service to apply changes:
+
+```bash
+systemctl restart falco
+```
+
+3. Verify the changes are applied by checking `syslog`:
+
+```bash
+tail -f /var/log/syslog | grep falco
+```
 
 
 ### References:
