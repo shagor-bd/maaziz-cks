@@ -1,8 +1,12 @@
 #!/bin/sh
 
 # Source: https://kubernetes.io/docs/reference/setup-tools/kubeadm
+# CNI: Cilium in kube-proxy-replacement mode (https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/)
 
 KUBE_VERSION=1.35.0
+CILIUM_VERSION=1.19.5
+POD_CIDR=172.24.0.0/16
+APISERVER_PORT=6443
 
 set -e
 
@@ -42,7 +46,7 @@ hostnamectl set-hostname "$short_hostname"
 
 ### setup terminal
 apt-get --allow-unauthenticated update
-apt-get --allow-unauthenticated install -y bash-completion binutils
+apt-get --allow-unauthenticated install -y bash-completion binutils curl tar
 echo 'colorscheme ron' >> ~/.vimrc
 echo 'set tabstop=2' >> ~/.vimrc
 echo 'set shiftwidth=2' >> ~/.vimrc
@@ -406,22 +410,44 @@ systemctl restart containerd
 systemctl enable kubelet && systemctl start kubelet
 
 
+### install Cilium CLI
+CILIUM_CLI_ARCH=${PLATFORM}
+curl -L --fail --remote-name-all \
+  "https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-${CILIUM_CLI_ARCH}.tar.gz{,.sha256sum}"
+sha256sum --check "cilium-linux-${CILIUM_CLI_ARCH}.tar.gz.sha256sum"
+sudo tar xzvfC "cilium-linux-${CILIUM_CLI_ARCH}.tar.gz" /usr/local/bin
+rm -f "cilium-linux-${CILIUM_CLI_ARCH}.tar.gz" "cilium-linux-${CILIUM_CLI_ARCH}.tar.gz.sha256sum"
+
+
 ### init k8s
 rm /root/.kube/config || true
-kubeadm init --kubernetes-version=${KUBE_VERSION} --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 192.168.0.0/16
+
+# IP used for the API server - needed by Cilium's kube-proxy-replacement
+# (k8sServiceHost) to reach the apiserver directly, bypassing kube-proxy.
+NODE_IP=$(ip -4 route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if ($i=="src") print $(i+1)}')
+echo "Detected node IP for API server: ${NODE_IP}"
+
+kubeadm init --kubernetes-version=${KUBE_VERSION} --ignore-preflight-errors=NumCPU --skip-token-print \
+  --pod-network-cidr ${POD_CIDR} \
+  --apiserver-advertise-address=${NODE_IP} \
+  --skip-phases=addon/kube-proxy
 
 mkdir -p ~/.kube
 sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
 
 
-### CNI
-kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/weave.yaml
-echo "Waiting for weave-net to be ready..."
-sleep 10
-kubectl -n kube-system wait --for=condition=Ready pod -l name=weave-net --timeout=3600s
+### CNI - Cilium (kube-proxy-replacement mode)
+cilium install --version ${CILIUM_VERSION} \
+  --set ipam.mode=cluster-pool \
+  --set ipam.operator.clusterPoolIPv4PodCIDRList="${POD_CIDR}" \
+  --set kubeProxyReplacement=true \
+  --set k8sServiceHost=${NODE_IP} \
+  --set k8sServicePort=${APISERVER_PORT}
+echo "Waiting for Cilium to be ready..."
+cilium status --wait
 sleep 5
 kubectl -n kube-system delete pods -l k8s-app=kube-dns --force --grace-period 0
-echo "Waiting for weave-net to be ready... done"
+echo "Waiting for Cilium to be ready... done"
 
 
 ### finished

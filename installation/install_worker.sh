@@ -1,6 +1,11 @@
 #!/bin/sh
 
 # Source: https://kubernetes.io/docs/reference/setup-tools/kubeadm
+# CNI: Cilium in kube-proxy-replacement mode - this node just needs the same
+# containerd/kubelet prerequisites as the control-plane; Cilium's agent
+# DaemonSet installs itself on this node automatically once it joins.
+# No kube-proxy is deployed anywhere in the cluster, so there is nothing
+# CNI-specific to install here - only the join step at the bottom changes.
 
 KUBE_VERSION=1.35.0
 
@@ -415,4 +420,8 @@ service kubelet start
 echo
 echo "EXECUTE ON MASTER: kubeadm token create --print-join-command --ttl 0"
 echo "THEN RUN THE OUTPUT AS COMMAND HERE TO ADD AS WORKER"
+echo
+echo "No kube-proxy or CNI install is needed on this node - the cluster is"
+echo "running Cilium in kube-proxy-replacement mode, so Cilium's own"
+echo "agent DaemonSet will land on this node automatically once it joins."
 echo
